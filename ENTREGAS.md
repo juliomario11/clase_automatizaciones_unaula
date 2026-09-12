@@ -30,7 +30,7 @@ La hipótesis más probable es que la entrega de mañana sea un ejercicio práct
 
 Propuesta principal: **AutomatIA** (fusiona "Automatización" + "IA", los dos pilares del curso). Alternativas: *FlowMind*, *NeuroFlow*, *FlowForge*. Pendiente de confirmar cuál se usó finalmente en el formulario.
 
-## Opciones de proceso a automatizar (elegir 1)
+## Opciones de proceso a automatizar (elegir 1 de 4)
 
 Las tres usan material que ya se generó en clase, para que la exposición de 8 minutos tenga una demo real que mostrar y no solo teoría.
 
@@ -51,6 +51,19 @@ Las tres usan material que ya se generó en clase, para que la exposición de 8 
 - **Manual hoy:** ordenar a mano los PDFs/Excel/videos que se van acumulando en una carpeta (como esta misma de Descargas o la del curso).
 - **Automatizado:** un flujo de escritorio (Clase 3: acciones de archivos, bucles) mueve cada archivo a la subcarpeta según su tipo o el patrón del nombre, invocado a diario por un flujo de nube programado (igual que el flujo del dólar con Machine Runtime, Clase 4).
 - **Para los 8 min:** corres el flujo en vivo sobre una carpeta desordenada y se ve ordenarse sola; es la opción más simple de construir si queda poco tiempo.
+
+### Opción 4 — Gestión automática de incidentes de red (ServiceNow + regiones + monitoreo)
+
+- **Manual hoy:** al crearse un incidente (INC) en ServiceNow por una falla de red, alguien debe revisarlo, clasificar impacto/urgencia, avisar a la región encargada, buscar manualmente si ya hubo un caso similar en ese nodo, y hacer seguimiento del avance en Salesforce Field Service hasta el cierre.
+- **Automatizado (diseño propuesto):**
+  1. **Disparador:** se crea un INC en ServiceNow → el flujo se dispara (o, en su defecto, detecta una fila nueva en Supabase/CSV que simula la cola de incidentes) y envía un correo de notificación inicial.
+  2. **Clasificación:** con los campos de impacto y urgencia del INC calcula la prioridad (matriz Impacto × Urgencia) y el número de clientes afectados.
+  3. **Alerta y enrutamiento regional:** genera una alerta y notifica al encargado de la región correspondiente entre las 5 regiones (ANDINA, SUR, BOGOTÁ, ORIENTE, COSTA), según la zona/nodo del incidente.
+  4. **Histórico de soluciones:** consulta en Supabase (o el CSV) si existen soluciones previas para ese mismo tipo de problema o ese mismo nodo, diferenciando tecnología HFC (nodo) o GPON (ARPON), y las adjunta como referencia.
+  5. **Monitoreo simulado:** simula una consulta a CACTI (si es HFC) o a ZABBIX (si es GPON) para anexar el estado de red del nodo/ARPON afectado.
+  6. **Seguimiento periódico:** cada cierto intervalo consulta el avance del caso en Salesforce Field Service y reenvía el estado a los interesados; si el caso ya aparece resuelto en Salesforce, marca el incidente como "OK" y cierra el seguimiento.
+- **Para los 8 min:** es la opción más completa de las cuatro — se puede mostrar el ciclo entero con un INC de prueba (fila en Supabase/CSV): clasificación automática de prioridad, alerta a la región, consulta del histórico por nodo, respuesta simulada de Cacti/Zabbix, y cierre automático al "resolverse" en Salesforce.
+- **Nota de alcance:** integra 5-6 sistemas (ServiceNow, Supabase/CSV, correo, Cacti/Zabbix, Salesforce), bastante más que las otras 3 opciones. Para que sea viable en el tiempo disponible, conviene simular con datos de prueba las integraciones que no se puedan conectar de verdad (el profesor solo pidió mostrar el flujo funcionando con un caso de prueba, no una integración productiva) y aclararlo así en la exposición.
 
 ### 👉 Elegida
 
