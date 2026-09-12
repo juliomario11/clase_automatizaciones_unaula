@@ -28,7 +28,7 @@ La hipótesis más probable es que la entrega de mañana sea un ejercicio práct
 
 ## Nombre del proyecto (formulario "Registro de equipos")
 
-Propuesta principal: **AutomatIA** (fusiona "Automatización" + "IA", los dos pilares del curso). Alternativas: *FlowMind*, *NeuroFlow*, *FlowForge*. Pendiente de confirmar cuál se usó finalmente en el formulario.
+**FlowCentinela** — "Centinela" porque el flujo vigila el inventario (stock de materiales y vida útil de EPP) y alerta cuando algo necesita atención; "Flow" conecta directo con Power Automate. (Alternativas descartadas: *AutomatIA*, *FlowMind*, *NeuroFlow*, *FlowForge*, pensadas para otras opciones de proyecto.)
 
 ## Opciones de proceso a automatizar (elegir 1 de 5)
 
@@ -79,7 +79,7 @@ Las tres usan material que ya se generó en clase, para que la exposición de 8 
 
 ### 👉 Elegida
 
-*(Marca aquí cuál escogiste: Opción 1 / 2 / 3, y cualquier ajuste que le hagas al alcance.)*
+**Opción 5 — Automatización de alertas para la plataforma de inventario de FSCR Ingeniería S.A.S.**, con nombre de proyecto **FlowCentinela**. Prompt de Copilot específico para este proyecto en [`PROMPT_COPILOT.md`](./PROMPT_COPILOT.md). Presentación de la exposición: [`presentacion_flowcentinela.html`](./presentacion_flowcentinela.html).
 
 ## Súper prompt para Copilot
 
