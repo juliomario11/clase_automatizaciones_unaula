@@ -2,6 +2,8 @@
 
 Prompt específico para el proyecto final elegido (Opción 5 de `ENTREGAS.md`): FlowCentinela, una automatización de alertas para la plataforma de inventario de FSCR Ingeniería S.A.S. Pégalo tal cual en Copilot (Microsoft 365 Copilot / Copilot de Power Automate).
 
+> Este prompt es para **evaluar y diseñar** (alcance, riesgos, pruebas, guion de exposición). Una vez tengas ese diseño, usa [`PROMPT_CONSTRUIR_AUTOMATE.md`](./PROMPT_CONSTRUIR_AUTOMATE.md) para los prompts que arman el flujo de verdad dentro de Power Automate.
+
 ## El prompt
 
 ```text

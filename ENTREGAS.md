@@ -79,7 +79,11 @@ Las tres usan material que ya se generó en clase, para que la exposición de 8 
 
 ### 👉 Elegida
 
-**Opción 5 — Automatización de alertas para la plataforma de inventario de FSCR Ingeniería S.A.S.**, con nombre de proyecto **FlowCentinela**. Prompt de Copilot específico para este proyecto en [`PROMPT_COPILOT.md`](./PROMPT_COPILOT.md). Presentación de la exposición: [`presentacion_flowcentinela.html`](./presentacion_flowcentinela.html).
+**Opción 5 — Automatización de alertas para la plataforma de inventario de FSCR Ingeniería S.A.S.**, con nombre de proyecto **FlowCentinela**.
+
+- Prompt de **evaluación y diseño**: [`PROMPT_COPILOT.md`](./PROMPT_COPILOT.md).
+- Prompts de **construcción** (los que arman el flujo en Power Automate): [`PROMPT_CONSTRUIR_AUTOMATE.md`](./PROMPT_CONSTRUIR_AUTOMATE.md).
+- Presentación de la exposición: [`presentacion_flowcentinela.html`](./presentacion_flowcentinela.html).
 
 ## Cómo montar la demo en vivo — FlowCentinela
 
