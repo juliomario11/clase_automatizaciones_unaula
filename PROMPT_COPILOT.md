@@ -1,6 +1,6 @@
 # Súper prompt — Copilot en Power Automate (proyecto: FlowCentinela)
 
-Prompt específico para el proyecto final elegido (Opción 5 de `ENTREGAS.md`): automatización de alertas para la plataforma de inventario de FSCR Ingeniería S.A.S. A diferencia de la versión anterior de este archivo, aquí no hay placeholders que completar — pégalo tal cual en Copilot (Microsoft 365 Copilot / Copilot de Power Automate).
+Prompt específico para el proyecto final elegido (Opción 5 de `ENTREGAS.md`): FlowCentinela, una automatización de alertas para la plataforma de inventario de FSCR Ingeniería S.A.S. Pégalo tal cual en Copilot (Microsoft 365 Copilot / Copilot de Power Automate).
 
 ## El prompt
 
@@ -15,42 +15,69 @@ exponer (mínimo 8 minutos) una automatización propia en Power Automate para el
 "FlowCentinela", siguiendo el ciclo de vida de automatización visto en el curso.
 
 PROCESO A AUTOMATIZAR:
-Mi empresa, FSCR Ingeniería S.A.S., desarrolla una plataforma interna (NestJS 11 + Angular 21
-+ Supabase/PostgreSQL, arquitectura hexagonal por dominio) para administrar Materiales,
-Equipos, EPP (elementos de protección personal) y Bodegas de las brigadas que operan la red
-de un cliente de telecomunicaciones. Los dominios Materiales, Equipos y Bodegas ya están
-implementados; EPP está en definición. Hoy NO existen alertas automáticas de stock bajo de
-materiales por bodega, ni de vencimiento de vida útil de EPP por trabajador, ni un reporte
-periódico consolidado a dirección — alguien tendría que entrar al sistema y revisarlo
-manualmente para detectarlo. Quiero que Power Automate cubra ese hueco, SIN reemplazar la
-plataforma ni su lógica de negocio:
+Mi empresa, FSCR Ingeniería S.A.S., tiene una plataforma interna (NestJS + Angular + Supabase/
+PostgreSQL) para administrar Materiales, Equipos, EPP y Bodegas de las brigadas que operan la
+red de un cliente de telecomunicaciones. Hoy nadie recibe una alerta automática si el stock de
+un material cae bajo el mínimo en una bodega, o si un elemento de protección personal (EPP) está
+por vencer su vida útil — alguien tendría que entrar a revisarlo manualmente. Quiero un flujo de
+Power Automate que:
 
-1. Un flujo programado (diario) que consulte, vía la API REST de Supabase con un rol de
-   SOLO LECTURA (nunca la llave de servicio, para respetar el mismo principio de "toda
-   escritura pasa por el backend" que ya rige la plataforma), el libro mayor de materiales
-   y la vida útil de EPP por trabajador.
-2. Si un material cae bajo un umbral de stock en una bodega, o un EPP está próximo a vencer,
-   debe generar una alerta (correo/Teams) al encargado de esa bodega.
-3. Si hace falta registrar que la alerta ya se envió (para no duplicar avisos), debe llamar
-   a un endpoint propio del backend NestJS en vez de escribir directo en una tabla.
-4. Un reporte semanal consolidado a dirección: bodegas bloqueadas, equipos en mantenimiento
-   prolongado, EPP pendiente de reposición.
+1. Todos los días, consulte (solo lectura, vía API REST de Supabase) el stock de materiales por
+   bodega y la vida útil de EPP por trabajador.
+2. Si un material está bajo el mínimo, o un EPP está a menos de X días de vencer, genere una
+   alerta y envíe un correo usando la PLANTILLA correspondiente al tipo:
+
+   PLANTILLA "Stock bajo":
+   Asunto: ⚠ Stock bajo — {Bodega} — {Material}
+   Cuerpo:
+   "Se detectó un nivel de stock por debajo del mínimo definido.
+
+   Bodega: {Bodega}
+   Material: {Material}
+   Stock actual: {StockActual} {Unidad}
+   Stock mínimo: {StockMinimo} {Unidad}
+
+   Por favor gestionar la reposición con el proveedor correspondiente."
+
+   PLANTILLA "EPP por vencer":
+   Asunto: ⏰ EPP por vencer — {Trabajador} — {Elemento}
+   Cuerpo:
+   "Se detectó un elemento de protección personal próximo a vencer su vida útil.
+
+   Trabajador: {Trabajador}
+   Elemento: {Elemento}
+   Días restantes: {DiasRestantes}
+
+   Por favor programar la reposición antes de la fecha indicada."
+
+3. Además del disparador diario (Recurrence), necesito un SEGUNDO disparador manual
+   ("Manually trigger a flow") con entradas de tipo texto/número — Escenario, Bodega, Material,
+   StockActual, StockMinimo, Trabajador, Elemento, DiasRestantes — para poder ejecutar el flujo
+   a demanda EN CLASE y demostrar que el correo llega de verdad, sin depender de que en ese
+   momento exista un caso real por debajo del umbral en la base de datos.
+4. Para la demo en clase, TODOS los correos (de ambas plantillas) deben llegar a
+   mario.perez6361@unaula.edu.co (en producción irían al encargado real de cada bodega, pero
+   eso queda fuera del alcance de la demo).
+5. Un reporte semanal (los lunes) consolidado a dirección: bodegas bloqueadas, equipos en
+   mantenimiento prolongado, EPP pendiente de reposición.
 
 LO QUE NECESITO QUE HAGAS:
-1. Evalúa si este diseño es un buen candidato para Power Automate (¿por qué encaja mejor
-   aquí que programarlo a mano dentro de NestJS?) y qué recortarías del alcance para que sea
-   viable en pocos días.
-2. Propón el diseño del flujo paso a paso: disparador(es), conectores (HTTP/Supabase REST,
-   Outlook/Teams), condiciones, y los puntos donde más probablemente falle (autenticación
-   contra Supabase, formatos de fecha de vencimiento de EPP, alertas duplicadas).
+1. Evalúa si este diseño es un buen candidato para Power Automate y qué recortarías del
+   alcance para que sea viable en pocos días.
+2. Propón el diseño del flujo paso a paso para AMBOS disparadores (el diario y el manual de
+   demo): conectores (HTTP/Supabase REST, Office 365 Outlook), condiciones, y los puntos donde
+   más probablemente falle (autenticación contra Supabase, formato de fechas, autorización de
+   la conexión de Outlook antes de la clase).
 3. Redacta, en un bloque de código aparte, las instrucciones en lenguaje natural listas para
    pegar en el asistente Copilot de Power Automate ("Describe para diseñar") y generar un
-   primer borrador de ESTE flujo concreto.
-4. Indica qué pruebas debería hacer para validarlo, incluyendo casos borde (stock justo en
-   el umbral, EPP sin fecha de vencimiento registrada, bodega sin encargado asignado).
+   primer borrador de ESTE flujo concreto, con sus dos disparadores y sus dos plantillas.
+4. Indica qué pruebas debería hacer ANTES de la clase, incluyendo casos borde (stock justo en
+   el umbral, EPP sin fecha de vencimiento registrada, ambas condiciones a la vez) y la prueba
+   de que el correo efectivamente llega a mario.perez6361@unaula.edu.co.
 5. Redacta un guion breve (mínimo 8 minutos hablados) para la exposición de "FlowCentinela":
-   el problema (falta de alertas automáticas), el diseño, la demo con datos reales o de
-   prueba, y el beneficio (tiempo de reacción ante quiebres de stock o EPP vencido).
+   qué hace, cuánto tiempo ahorra, qué evita, qué mejora, la demo en vivo (disparo manual →
+   correo real) y el cierre. Enfócate en el proyecto y su beneficio, sin entrar en detalles de
+   seguridad ni de cómo estaba construida la plataforma antes.
 
 FORMATO DE RESPUESTA:
 - Un encabezado por cada uno de los 5 puntos anteriores.

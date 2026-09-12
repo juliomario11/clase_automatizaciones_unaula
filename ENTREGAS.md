@@ -81,6 +81,35 @@ Las tres usan material que ya se generó en clase, para que la exposición de 8 
 
 **Opción 5 — Automatización de alertas para la plataforma de inventario de FSCR Ingeniería S.A.S.**, con nombre de proyecto **FlowCentinela**. Prompt de Copilot específico para este proyecto en [`PROMPT_COPILOT.md`](./PROMPT_COPILOT.md). Presentación de la exposición: [`presentacion_flowcentinela.html`](./presentacion_flowcentinela.html).
 
+## Cómo montar la demo en vivo — FlowCentinela
+
+Para que en la exposición se vea el flujo funcionando de verdad (no solo la presentación), arma esto en Power Automate:
+
+### 1. Dos disparadores, no uno
+
+- **Disparador de producción:** `Recurrence` (diario) — el que consulta Supabase, ya descrito en el prompt de Copilot.
+- **Disparador de demo:** un `Manually trigger a flow` con entradas manuales, para poder correrlo a demanda frente al salón sin depender de que en ese momento exista un caso real por debajo del umbral:
+  - `Escenario` (opción: Stock bajo / EPP por vencer)
+  - `Bodega`, `Material`, `StockActual`, `StockMinimo`
+  - `Trabajador`, `ElementoEPP`, `DiasRestantes`
+
+### 2. Condición y plantilla por tipo
+
+- Un `Condition`: si `Escenario = Stock bajo` &rarr; rama A; si `Escenario = EPP por vencer` &rarr; rama B.
+- En cada rama, un `Compose` con el cuerpo de la plantilla correspondiente (ver `PROMPT_COPILOT.md` o la diapositiva "Plantillas de alerta" de la presentación), rellenado con el contenido dinámico de las entradas del disparador manual.
+
+### 3. Envío del correo (receptor de la demo)
+
+- Acción `Send an email (V2)` (conector Office 365 Outlook, con tu cuenta institucional).
+- **Para:** `mario.perez6361@unaula.edu.co` — en producción el destinatario real sería el encargado de cada bodega, pero en la demo todo llega a tu propio correo para mostrarlo en clase.
+- Asunto y cuerpo tomados del `Compose` de la rama que se activó.
+
+### 4. Antes de la clase
+
+- Ejecuta el flujo manualmente (botón "Probar" &rarr; "Manualmente") al menos una vez para autorizar la conexión de Outlook y confirmar que el correo llega a `mario.perez6361@unaula.edu.co`.
+- Prueba los 2 escenarios (stock bajo / EPP por vencer) con antelación, para no depender de la conectividad en vivo frente al salón.
+- El simulador de la diapositiva "Simulador del flujo" en `presentacion_flowcentinela.html` es la versión visual/interactiva para la presentación; el correo real llega desde el flujo de Power Automate que construyas siguiendo lo anterior — son dos piezas complementarias, no la misma cosa.
+
 ## Súper prompt para Copilot
 
 Se movió a su propio archivo: [`PROMPT_COPILOT.md`](./PROMPT_COPILOT.md).

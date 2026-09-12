@@ -1,4 +1,5 @@
 <title>FlowCentinela</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
   :root{
     --bg:#0A0F1C;
@@ -11,13 +12,15 @@
     --text-faint:#5C6A8C;
     --accent:#F0A94E;
     --accent-soft:rgba(240,169,78,0.14);
+    --accent-2:#4EA6E0;
+    --accent-2-soft:rgba(78,166,224,0.14);
     --ok:#3ECF8E;
     --ok-soft:rgba(62,207,142,0.14);
     --crit:#F0555F;
     --crit-soft:rgba(240,85,95,0.14);
-    --font-display:'Chakra Petch', sans-serif;
-    --font-body:'IBM Plex Sans', sans-serif;
-    --font-mono:'IBM Plex Mono', monospace;
+    --font-display:'Chakra Petch', 'Segoe UI', sans-serif;
+    --font-body:'IBM Plex Sans', 'Segoe UI', sans-serif;
+    --font-mono:'IBM Plex Mono', 'Consolas', monospace;
   }
 
   *{box-sizing:border-box;}
@@ -28,7 +31,7 @@
     min-height:100dvh;
     background:
       radial-gradient(ellipse 60% 45% at 82% 8%, rgba(240,169,78,0.10), transparent 60%),
-      radial-gradient(ellipse 70% 60% at 12% 95%, rgba(62,124,207,0.10), transparent 60%),
+      radial-gradient(ellipse 70% 60% at 12% 95%, rgba(78,166,224,0.09), transparent 60%),
       var(--bg);
     color:var(--text);
     font-family:var(--font-body);
@@ -91,10 +94,11 @@
   .slide{
     position:absolute; inset:0;
     display:flex; flex-direction:column; justify-content:center;
-    padding:clamp(28px,5vw,72px) clamp(20px,7vw,120px);
+    padding:clamp(28px,4.5vw,64px) clamp(20px,7vw,120px);
     opacity:0; transform:translateX(24px);
     transition:opacity .45s ease, transform .45s ease;
     pointer-events:none;
+    overflow-y:auto;
   }
   .slide.is-active{opacity:1; transform:translateX(0); pointer-events:auto;}
   .slide.is-prev{transform:translateX(-24px);}
@@ -105,17 +109,17 @@
   }
   .slide h2{
     font-family:var(--font-display); font-weight:600;
-    font-size:clamp(1.7rem,3.6vw,2.6rem);
-    margin:0 0 18px; text-wrap:balance; color:var(--text);
+    font-size:clamp(1.6rem,3.4vw,2.4rem);
+    margin:0 0 14px; text-wrap:balance; color:var(--text);
   }
   .slide-body{max-width:920px;}
-  .slide p{font-size:clamp(1rem,1.35vw,1.14rem); line-height:1.6; color:var(--text-dim); max-width:70ch;}
+  .slide > p{font-size:clamp(0.96rem,1.3vw,1.08rem); line-height:1.6; color:var(--text-dim); max-width:72ch; margin:0 0 6px;}
 
-  /* ---------- Slide 1: cover ---------- */
+  /* ---------- Slide 0: cover ---------- */
   .cover{align-items:flex-start; justify-content:center; position:relative;}
   .cover h1{
     font-family:var(--font-display); font-weight:700;
-    font-size:clamp(3rem,8.5vw,6.2rem); line-height:0.98;
+    font-size:clamp(2.8rem,8vw,5.8rem); line-height:0.98;
     margin:0 0 18px; letter-spacing:-0.01em; text-wrap:balance;
     background:linear-gradient(120deg, var(--text) 40%, var(--accent) 105%);
     -webkit-background-clip:text; background-clip:text; color:transparent;
@@ -139,9 +143,7 @@
   }
   .radar::before{inset:16%;}
   .radar::after{inset:34%;}
-  .radar-sweep{
-    position:absolute; inset:0; border-radius:50%; overflow:hidden;
-  }
+  .radar-sweep{position:absolute; inset:0; border-radius:50%; overflow:hidden;}
   .radar-sweep::before{
     content:""; position:absolute; inset:0;
     background:conic-gradient(from 0deg, var(--accent-soft) 0deg, transparent 55deg);
@@ -149,41 +151,18 @@
   }
   @keyframes spin{to{transform:rotate(360deg);}}
 
-  /* ---------- Slide 2: platform grid ---------- */
-  .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:8px;}
-  .domain-card{
+  /* ---------- Pillars (qué hace) ---------- */
+  .pillars{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:20px;}
+  .pillar-card{
     background:var(--surface); border:1px solid var(--border); border-radius:10px;
-    padding:20px; display:flex; flex-direction:column; gap:10px; min-height:170px;
+    padding:20px; display:flex; flex-direction:column; gap:8px;
   }
-  .domain-card h3{margin:0; font-family:var(--font-display); font-size:1.1rem; font-weight:600; color:var(--text);}
-  .domain-card p{margin:0; font-size:0.88rem; line-height:1.5; color:var(--text-dim);}
-  .status-pill{
-    align-self:flex-start; font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.06em;
-    text-transform:uppercase; padding:3px 9px; border-radius:99px;
-  }
-  .status-pill--ok{background:var(--ok-soft); color:var(--ok);}
-  .status-pill--pending{background:var(--accent-soft); color:var(--accent);}
-  .stack-line{
-    margin-top:6px; font-family:var(--font-mono); font-size:0.82rem; color:var(--text-faint);
-  }
+  .pillar-card .glyph{font-size:1.5rem;}
+  .pillar-card h3{margin:0; font-family:var(--font-display); font-size:1.05rem; font-weight:600; color:var(--text);}
+  .pillar-card p{margin:0; font-size:0.88rem; line-height:1.5; color:var(--text-dim);}
 
-  /* ---------- Slide 3: blind spots ---------- */
-  .gap-list{list-style:none; margin:6px 0 22px; padding:0; display:flex; flex-direction:column; gap:12px; max-width:760px;}
-  .gap-list li{
-    display:flex; gap:14px; align-items:flex-start;
-    background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--crit);
-    border-radius:8px; padding:14px 18px;
-  }
-  .gap-list .mark{font-family:var(--font-mono); color:var(--crit); font-size:0.95rem; margin-top:1px;}
-  .gap-list p{margin:0; color:var(--text); font-size:0.98rem;}
-  .gap-list span.dim{color:var(--text-dim);}
-  .callout{
-    font-family:var(--font-mono); font-size:0.92rem; color:var(--accent);
-    border-left:2px solid var(--accent); padding-left:14px; max-width:64ch;
-  }
-
-  /* ---------- Slide 4: flow diagram ---------- */
-  .flow{display:flex; align-items:stretch; gap:10px; margin:10px 0 24px; flex-wrap:wrap;}
+  /* ---------- Flow diagram ---------- */
+  .flow{display:flex; align-items:stretch; gap:10px; margin:18px 0 20px; flex-wrap:wrap;}
   .flow-step{
     flex:1 1 160px; background:var(--surface); border:1px solid var(--border);
     border-radius:10px; padding:16px; display:flex; flex-direction:column; gap:8px; min-width:150px;
@@ -196,45 +175,122 @@
   .flow-step h4{margin:0; font-size:0.94rem; font-family:var(--font-body); font-weight:600; color:var(--text);}
   .flow-step p{margin:0; font-size:0.8rem; color:var(--text-dim); line-height:1.45;}
   .flow-arrow{display:flex; align-items:center; justify-content:center; color:var(--text-faint); font-size:1.3rem; padding:0 2px;}
-  .flow-branch{
-    display:flex; align-items:center; gap:14px; margin-top:4px;
-    font-family:var(--font-mono); font-size:0.8rem; color:var(--text-faint);
-  }
+  .flow-branch{display:flex; align-items:center; gap:14px; margin-top:2px; font-family:var(--font-mono); font-size:0.8rem; color:var(--text-faint);}
   .flow-branch-line{width:34px; border-top:2px dashed var(--border);}
   .flow-branch .flow-step{flex:0 1 260px; border-style:dashed;}
 
-  /* ---------- Slide 5: security compare ---------- */
-  .compare{display:flex; flex-direction:column; gap:14px; margin-top:10px; max-width:900px;}
-  .compare-row{display:grid; grid-template-columns:1fr 28px 1fr; gap:14px; align-items:stretch;}
-  .compare-cell{border-radius:8px; padding:14px 16px; font-size:0.92rem; line-height:1.5;}
-  .compare-cell--before{background:var(--crit-soft); border:1px solid rgba(240,85,95,0.35); color:var(--text);}
-  .compare-cell--after{background:var(--ok-soft); border:1px solid rgba(62,207,142,0.35); color:var(--text);}
-  .compare-arrow{display:flex; align-items:center; justify-content:center; color:var(--text-faint);}
-  .compare-label{font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; display:block; margin-bottom:6px;}
-  .compare-cell--before .compare-label{color:var(--crit);}
-  .compare-cell--after .compare-label{color:var(--ok);}
-
-  /* ---------- Slide 6: demo ---------- */
-  .demo-cards{display:flex; flex-direction:column; gap:14px; margin:8px 0 18px; max-width:640px;}
-  .demo-card{
-    background:var(--surface-2); border:1px solid var(--border); border-radius:10px;
-    padding:16px 18px; font-family:var(--font-mono);
+  /* ---------- Email mock (plantillas) ---------- */
+  .templates-row{display:flex; gap:20px; margin-top:16px; flex-wrap:wrap;}
+  .email-mock{
+    flex:1 1 320px; background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    overflow:hidden; display:flex; flex-direction:column;
   }
-  .demo-card .title{font-size:0.86rem; color:var(--accent); margin-bottom:6px;}
-  .demo-card .body{font-size:0.92rem; color:var(--text);}
-  .demo-note{font-size:0.82rem; color:var(--text-faint); font-style:italic;}
+  .email-mock--stock{border-left:4px solid var(--accent);}
+  .email-mock--epp{border-left:4px solid var(--accent-2);}
+  .email-mock-tag{
+    font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.06em; text-transform:uppercase;
+    padding:8px 16px;
+  }
+  .email-mock--stock .email-mock-tag{color:var(--accent); background:var(--accent-soft);}
+  .email-mock--epp .email-mock-tag{color:var(--accent-2); background:var(--accent-2-soft);}
+  .email-mock-meta{
+    font-family:var(--font-mono); font-size:0.74rem; color:var(--text-faint); line-height:1.6;
+    padding:10px 16px 0; border-top:1px solid var(--border);
+  }
+  .email-mock-subject{
+    padding:10px 16px; font-weight:600; color:var(--text); font-size:0.9rem; border-bottom:1px solid var(--border); margin-top:8px;
+  }
+  .email-mock-body{padding:12px 16px 16px; font-size:0.83rem; line-height:1.6; color:var(--text-dim); white-space:pre-line;}
+  .templates-caption{margin-top:14px; font-size:0.85rem; color:var(--text-faint); max-width:70ch;}
 
-  /* ---------- Slide 7: metrics ---------- */
-  .metrics{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:10px 0 20px;}
-  .metric-card{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px;}
-  .metric-card h4{margin:0 0 10px; font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-faint); font-family:var(--font-mono); font-weight:500;}
-  .metric-before{font-size:0.88rem; color:var(--text-dim); text-decoration:line-through; text-decoration-color:var(--crit);}
-  .metric-after{font-family:var(--font-display); font-size:1.3rem; font-weight:600; color:var(--ok); margin-top:4px;}
+  /* ---------- Simulator ---------- */
+  .sim-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:16px; align-items:start;}
+  .sim-controls{display:flex; flex-direction:column; gap:12px;}
+  .sim-card{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:9px;}
+  .sim-card h4{margin:0; font-size:0.9rem; font-weight:600; color:var(--text); font-family:var(--font-body);}
+  .bar-track{position:relative; height:10px; border-radius:99px; background:var(--surface-2); border:1px solid var(--border); margin-top:12px;}
+  .bar-fill{position:absolute; inset:0; width:0%; border-radius:99px; background:var(--accent); transition:width .5s ease, background-color .3s ease;}
+  .bar-fill--epp{background:var(--accent-2);}
+  .bar-fill.is-low{background:var(--crit);}
+  .bar-threshold{position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--text-faint);}
+  .bar-threshold::after{
+    content:attr(data-label); position:absolute; top:-17px; left:50%; transform:translateX(-50%);
+    font-family:var(--font-mono); font-size:0.6rem; color:var(--text-faint); white-space:nowrap;
+  }
+  .sim-readout{font-family:var(--font-mono); font-size:0.8rem; color:var(--text-dim);}
+  .sim-readout b{color:var(--text); font-weight:600;}
+  .sim-btn{
+    align-self:flex-start; background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    font-family:var(--font-body); font-size:0.82rem; padding:7px 12px; border-radius:7px; cursor:pointer;
+    transition:border-color .15s, color .15s;
+  }
+  .sim-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .sim-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .sim-actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:2px;}
+  .sim-run{
+    background:var(--accent); border:1px solid var(--accent); color:#251705; font-weight:600;
+    font-family:var(--font-display); font-size:0.9rem; padding:10px 18px; border-radius:8px; cursor:pointer;
+  }
+  .sim-run:hover{filter:brightness(1.08);}
+  .sim-run:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+  .sim-run:disabled{opacity:0.55; cursor:progress;}
+  .sim-reset-all{background:none; border:none; color:var(--text-faint); font-size:0.78rem; text-decoration:underline; cursor:pointer; padding:4px;}
+  .sim-reset-all:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .sim-output{display:flex; flex-direction:column; gap:12px;}
+  .sim-log{
+    background:var(--bg-2); border:1px solid var(--border); border-radius:10px; padding:12px 14px;
+    font-family:var(--font-mono); font-size:0.78rem; display:flex; flex-direction:column; gap:6px; min-height:108px;
+  }
+  .log-line--idle{color:var(--text-faint); font-style:italic;}
+  .log-line--ok{color:var(--ok);}
+  .log-line--warn{color:var(--accent);}
+  .log-line--warn2{color:var(--accent-2);}
+  .sim-email{display:flex; flex-direction:column; gap:10px;}
+  .sim-email .email-mock{flex:none;}
 
-  /* ---------- Slide 8: closing ---------- */
-  .closing h2{font-size:clamp(2.4rem,6vw,4rem);}
-  .closing .tagline{font-family:var(--font-display); color:var(--accent); font-size:1.1rem; margin:-8px 0 28px;}
-  .fact-sheet{display:flex; flex-direction:column; gap:6px; font-family:var(--font-mono); font-size:0.88rem; color:var(--text-dim); border-top:1px solid var(--border); padding-top:16px; max-width:520px;}
+  /* ---------- Compare bars + stat compare (cuánto ahorra) ---------- */
+  .compare-bars{display:flex; flex-direction:column; gap:12px; margin:16px 0 6px; max-width:520px;}
+  .cbar-row{display:grid; grid-template-columns:150px 1fr 56px; align-items:center; gap:10px;}
+  .cbar-label{font-size:0.83rem; color:var(--text-dim);}
+  .cbar-track{height:20px; background:var(--surface-2); border:1px solid var(--border); border-radius:5px; overflow:hidden;}
+  .cbar-fill{height:100%; border-radius:5px 0 0 5px;}
+  .cbar-fill--before{background:var(--crit);}
+  .cbar-fill--after{background:var(--ok);}
+  .cbar-value{font-family:var(--font-mono); font-size:0.84rem; text-align:right; color:var(--text); font-variant-numeric:tabular-nums;}
+  .reduction-badge{
+    display:inline-block; margin-top:4px; font-family:var(--font-mono); font-size:0.76rem;
+    color:var(--ok); background:var(--ok-soft); padding:3px 10px; border-radius:99px;
+  }
+  .stat-compare{display:flex; align-items:center; gap:20px; margin-top:24px; flex-wrap:wrap;}
+  .stat-block{text-align:center;}
+  .stat-block .num{font-family:var(--font-display); font-size:clamp(1.8rem,3.6vw,2.6rem); font-weight:700; color:var(--text);}
+  .stat-block.is-before .num{color:var(--text-faint); text-decoration:line-through; text-decoration-color:var(--crit);}
+  .stat-block.is-after .num{color:var(--ok);}
+  .stat-block .lbl{font-family:var(--font-mono); font-size:0.72rem; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.05em; margin-top:4px;}
+  .stat-arrow{font-size:1.5rem; color:var(--text-faint);}
+  .demo-note{font-size:0.8rem; color:var(--text-faint); font-style:italic; margin-top:14px;}
+
+  /* ---------- Percentage bars (qué mejora) ---------- */
+  .pct-list{display:flex; flex-direction:column; gap:15px; margin-top:16px; max-width:660px;}
+  .pct-row{display:grid; grid-template-columns:1fr 150px 48px; gap:14px; align-items:center;}
+  .pct-label{font-size:0.88rem; color:var(--text);}
+  .pct-track{height:10px; border-radius:99px; background:var(--surface-2); border:1px solid var(--border); overflow:hidden;}
+  .pct-fill{height:100%; border-radius:99px; background:linear-gradient(90deg, var(--accent), var(--accent-2));}
+  .pct-value{font-family:var(--font-mono); font-size:0.84rem; text-align:right; color:var(--text); font-variant-numeric:tabular-nums;}
+
+  /* ---------- Evita cards ---------- */
+  .evita-list{display:flex; flex-direction:column; gap:11px; margin-top:18px; max-width:760px;}
+  .evita-card{
+    display:flex; gap:14px; align-items:flex-start; background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:13px 18px;
+  }
+  .evita-card .glyph{font-size:1.25rem; line-height:1.3;}
+  .evita-card p{margin:0; color:var(--text); font-size:0.94rem; line-height:1.5;}
+
+  /* ---------- Closing ---------- */
+  .closing h2{font-size:clamp(2.2rem,5.5vw,3.6rem);}
+  .closing .tagline{font-family:var(--font-display); color:var(--accent); font-size:1.05rem; margin:-6px 0 24px;}
+  .fact-sheet{display:flex; flex-direction:column; gap:6px; font-family:var(--font-mono); font-size:0.86rem; color:var(--text-dim); border-top:1px solid var(--border); padding-top:16px; max-width:520px;}
   .fact-sheet b{color:var(--text); font-weight:500;}
 
   /* ---------- Controls ---------- */
@@ -255,7 +311,7 @@
   .ctrl-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
   .ctrl-btn--ghost{width:auto; padding:0 14px; font-family:var(--font-mono); font-size:0.78rem; letter-spacing:0.04em; gap:6px;}
   .ctrl-btn--ghost.is-on{border-color:var(--accent); color:var(--accent); background:var(--accent-soft);}
-  .dots{display:flex; gap:8px; margin:0 6px;}
+  .dots{display:flex; gap:7px; margin:0 6px; flex-wrap:wrap; max-width:180px; justify-content:center;}
   .dot{
     width:8px; height:8px; border-radius:50%; background:var(--border); border:none; cursor:pointer; padding:0;
     transition:background .15s, transform .15s;
@@ -276,7 +332,7 @@
   .notes-panel.is-open{transform:translateX(0);}
   .notes-title{font-family:var(--font-mono); font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent);}
   .notes-hint{font-size:0.78rem; color:var(--text-faint); border-bottom:1px solid var(--border); padding-bottom:12px;}
-  #notesText{font-size:0.98rem; line-height:1.6; color:var(--text);}
+  #notesText{font-size:0.96rem; line-height:1.6; color:var(--text);}
   .notes-close{align-self:flex-end; background:none; border:none; color:var(--text-faint); cursor:pointer; font-size:1.1rem;}
 
   @media (prefers-reduced-motion: reduce){
@@ -286,17 +342,17 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width:820px){
-    .grid4{grid-template-columns:repeat(2,1fr);}
-    .metrics{grid-template-columns:1fr;}
+    .pillars{grid-template-columns:1fr;}
+    .sim-grid{grid-template-columns:1fr;}
     .radar{display:none;}
-    .compare-row{grid-template-columns:1fr; }
-    .compare-arrow{transform:rotate(90deg); padding:2px 0;}
+    .pct-row{grid-template-columns:1fr; row-gap:6px;}
+    .pct-value{text-align:left;}
   }
   @media (max-width:520px){
-    .grid4{grid-template-columns:1fr;}
     .flow{flex-direction:column;}
     .flow-arrow{transform:rotate(90deg);}
     .hud{font-size:0.68rem;}
+    .cbar-row{grid-template-columns:110px 1fr 48px;}
   }
 </style>
 
@@ -305,7 +361,7 @@
 
   <header class="hud">
     <div class="hud-brand"><span class="hud-dot" aria-hidden="true"></span> FlowCentinela</div>
-    <div class="hud-slide-count"><span id="slideNum">1</span> / <span id="slideTotal">8</span></div>
+    <div class="hud-slide-count"><span id="slideNum">1</span> / <span id="slideTotal">9</span></div>
     <div class="hud-timer">
       <span id="timerDisplay">8:00</span>
       <button id="timerToggle" class="hud-icon-btn" type="button" aria-label="Iniciar cronómetro">▶</button>
@@ -317,142 +373,156 @@
 
     <section class="slide cover is-active" data-index="0">
       <h1>FlowCentinela</h1>
-      <p class="sub">Vigilancia automática de inventario, EPP y bodegas, construida con Power Automate.</p>
+      <p class="sub">Vigilancia automática de inventario y EPP, construida con Power Automate.</p>
       <div class="meta">
         <span><strong>Mario Daniel Enrique Pérez Jiménez</strong></span>
         <span>FSCR Ingeniería S.A.S. · Curso de Automatización, UNAULA</span>
       </div>
-      <div class="radar" aria-hidden="true">
-        <div class="radar-sweep"></div>
-      </div>
+      <div class="radar" aria-hidden="true"><div class="radar-sweep"></div></div>
     </section>
 
     <section class="slide" data-index="1">
-      <p class="eyebrow">El punto de partida</p>
-      <h2>Una plataforma, cuatro dominios</h2>
-      <div class="slide-body">
-        <p>FSCR Ingeniería S.A.S. ya opera un sistema propio &mdash; NestJS&nbsp;11, Angular&nbsp;21 y Supabase/PostgreSQL, con arquitectura hexagonal por dominio &mdash; para administrar el inventario de las brigadas que atienden la red de un cliente de telecomunicaciones.</p>
-      </div>
-      <div class="grid4">
-        <div class="domain-card">
-          <span class="status-pill status-pill--ok">Implementado</span>
-          <h3>Materiales</h3>
-          <p>Entradas, salidas, asignación, traslado y baja en un libro mayor de solo&#8209;anexar. El stock nunca se edita a mano: siempre se calcula.</p>
-        </div>
-        <div class="domain-card">
-          <span class="status-pill status-pill--ok">Implementado</span>
-          <h3>Equipos</h3>
-          <p>Inventario serializado por placa y serial únicos (FSCR-#####). Asignación, devolución y traslado como operaciones auditadas.</p>
-        </div>
-        <div class="domain-card">
-          <span class="status-pill status-pill--pending">En definición</span>
-          <h3>EPP</h3>
-          <p>Dotación, vida útil y reposición de elementos de protección personal por trabajador de brigada.</p>
-        </div>
-        <div class="domain-card">
-          <span class="status-pill status-pill--ok">Implementado</span>
-          <h3>Bodegas</h3>
-          <p>Ubicación por departamento y municipio. Bloqueo automático si tiene stock o equipos asignados.</p>
-        </div>
+      <p class="eyebrow">El proyecto</p>
+      <h2>Qué hace FlowCentinela</h2>
+      <p>Un flujo de Power Automate que se conecta a la plataforma de inventario de FSCR Ingeniería (Materiales, Equipos, EPP y Bodegas) y hace, todos los días, algo que hoy depende de que alguien se acuerde de revisarlo.</p>
+      <div class="pillars">
+        <div class="pillar-card"><span class="glyph">🔎</span><h3>Vigila</h3><p>Consulta a diario el stock por bodega y la vida útil de cada elemento de protección personal asignado.</p></div>
+        <div class="pillar-card"><span class="glyph">🧭</span><h3>Clasifica</h3><p>Determina si la alerta es por falta de stock o por vencimiento de EPP, y elige la plantilla de correo correspondiente.</p></div>
+        <div class="pillar-card"><span class="glyph">📨</span><h3>Notifica</h3><p>Envía la alerta al encargado de la bodega y arma un reporte semanal consolidado para dirección.</p></div>
       </div>
     </section>
 
     <section class="slide" data-index="2">
-      <p class="eyebrow">El punto ciego</p>
-      <h2>Lo que el sistema todavía no vigila</h2>
-      <ul class="gap-list">
-        <li><span class="mark">&#9888;</span><p>Sin alerta de <strong>stock bajo</strong> &mdash; <span class="dim">un material puede agotarse en una bodega y nadie se entera hasta que ya hace falta.</span></p></li>
-        <li><span class="mark">&#9888;</span><p>Sin alerta de <strong>vencimiento de EPP</strong> &mdash; <span class="dim">la vida útil de un casco o un arnés puede vencer sin que se programe la reposición.</span></p></li>
-        <li><span class="mark">&#9888;</span><p>Sin <strong>reporte periódico</strong> &mdash; <span class="dim">dirección no tiene una foto consolidada del estado de bodegas y equipos.</span></p></li>
-      </ul>
-      <p class="callout">Repetitivo. Basado en reglas. De volumen suficiente &mdash; el candidato a automatizar que enseña el ciclo de vida de la Clase&nbsp;1.</p>
-    </section>
-
-    <section class="slide" data-index="3">
-      <p class="eyebrow">La propuesta</p>
-      <h2>El flujo, paso a paso</h2>
+      <p class="eyebrow">El diseño</p>
+      <h2>Cómo funciona, paso a paso</h2>
       <div class="flow">
-        <div class="flow-step"><span class="flow-step-num">1</span><h4>Disparador diario</h4><p>Recurrence &mdash; cada mañana, antes del inicio de operación.</p></div>
+        <div class="flow-step"><span class="flow-step-num">1</span><h4>Disparador diario</h4><p>Recurrence, cada mañana antes del inicio de operación.</p></div>
         <div class="flow-arrow">&rarr;</div>
-        <div class="flow-step"><span class="flow-step-num">2</span><h4>Consulta a Supabase</h4><p>Rol de solo lectura. Libro mayor de materiales + vida útil de EPP.</p></div>
+        <div class="flow-step"><span class="flow-step-num">2</span><h4>Consulta a Supabase</h4><p>Lectura del stock de materiales y la vida útil de cada EPP.</p></div>
         <div class="flow-arrow">&rarr;</div>
-        <div class="flow-step"><span class="flow-step-num">3</span><h4>&iquest;Stock bajo o EPP por vencer?</h4><p>Condición sobre el umbral de cada bodega y la fecha de vencimiento.</p></div>
+        <div class="flow-step"><span class="flow-step-num">3</span><h4>&iquest;Bajo el umbral?</h4><p>Condición sobre el mínimo de cada bodega y la fecha de vencimiento.</p></div>
         <div class="flow-arrow">&rarr;</div>
-        <div class="flow-step"><span class="flow-step-num">4</span><h4>Alerta al encargado</h4><p>Correo o Teams, dirigido a la bodega específica.</p></div>
+        <div class="flow-step"><span class="flow-step-num">4</span><h4>Alerta con su plantilla</h4><p>Correo al encargado, con el texto correcto según el tipo de alerta.</p></div>
       </div>
       <div class="flow-branch">
         <div class="flow-branch-line"></div>
-        <div class="flow-step"><span class="flow-step-num">5</span><h4>Reporte semanal</h4><p>Cada lunes &mdash; bodegas bloqueadas, equipos en mantenimiento, EPP pendiente.</p></div>
+        <div class="flow-step"><span class="flow-step-num">5</span><h4>Reporte semanal</h4><p>Cada lunes: bodegas bloqueadas, equipos en mantenimiento, EPP pendiente.</p></div>
         <span>en paralelo, cada semana</span>
       </div>
     </section>
 
-    <section class="slide" data-index="4">
-      <p class="eyebrow">El compromiso de seguridad</p>
-      <h2>La misma regla, sin excepciones</h2>
-      <div class="compare">
-        <div class="compare-row">
-          <div class="compare-cell compare-cell--before"><span class="compare-label">Antes</span>Cualquier token válido bastaba para escribir en la base de datos.</div>
-          <div class="compare-arrow">&rarr;</div>
-          <div class="compare-cell compare-cell--after"><span class="compare-label">Con FlowCentinela</span>El flujo solo lee, con un rol restringido &mdash; nunca la llave de servicio.</div>
+    <section class="slide" data-index="3">
+      <p class="eyebrow">Dos tipos, dos plantillas</p>
+      <h2>La alerta llega distinta según el caso</h2>
+      <div class="templates-row">
+        <div class="email-mock email-mock--stock">
+          <div class="email-mock-tag">Plantilla &middot; Stock bajo</div>
+          <div class="email-mock-meta"><b>De:</b> FlowCentinela &lt;automatizacion@fscr.local&gt;<br><b>Para:</b> encargado.bodega@fscr.local</div>
+          <div class="email-mock-subject">&#9888; Stock bajo &mdash; Bodega Regional Oriente &mdash; Cable coaxial RG6</div>
+          <div class="email-mock-body">Se detectó un nivel de stock por debajo del mínimo definido.
+
+Bodega: Regional Oriente
+Material: Cable coaxial RG6
+Stock actual: 240 m
+Stock mínimo: 300 m
+
+Por favor gestionar la reposición con el proveedor.</div>
         </div>
-        <div class="compare-row">
-          <div class="compare-cell compare-cell--before"><span class="compare-label">Antes</span>El frontend escribía directo contra la base de datos.</div>
-          <div class="compare-arrow">&rarr;</div>
-          <div class="compare-cell compare-cell--after"><span class="compare-label">Con FlowCentinela</span>Toda escritura, también la del flujo, pasa por el backend de FSCR.</div>
+        <div class="email-mock email-mock--epp">
+          <div class="email-mock-tag">Plantilla &middot; EPP por vencer</div>
+          <div class="email-mock-meta"><b>De:</b> FlowCentinela &lt;automatizacion@fscr.local&gt;<br><b>Para:</b> encargado.brigada@fscr.local</div>
+          <div class="email-mock-subject">&#9200; EPP por vencer &mdash; Brigada Norte &mdash; Casco dieléctrico</div>
+          <div class="email-mock-body">Se detectó un elemento de protección personal próximo a vencer su vida útil.
+
+Trabajador: Brigada Norte
+Elemento: Casco dieléctrico
+Días restantes: 12
+
+Por favor programar la reposición antes de la fecha límite.</div>
+        </div>
+      </div>
+      <p class="templates-caption">En la demo de hoy, ambas plantillas llegan a la misma casilla de correo para mostrar en clase que el flujo funciona de verdad.</p>
+    </section>
+
+    <section class="slide" data-index="4">
+      <p class="eyebrow">En vivo</p>
+      <h2>Simulador del flujo</h2>
+      <p>Ajusta el escenario y ejecuta la verificación &mdash; igual que la haría FlowCentinela cada mañana.</p>
+      <div class="sim-grid">
+        <div class="sim-controls">
+          <div class="sim-card">
+            <h4>Material &middot; Cable coaxial RG6 &middot; Bodega Regional Oriente</h4>
+            <div class="bar-track"><div class="bar-fill" id="stockBar"></div><div class="bar-threshold" id="stockThresholdMark"></div></div>
+            <div class="sim-readout"><b id="stockValue">500</b> m en bodega &middot; mínimo <b id="stockMin">300</b> m</div>
+            <button class="sim-btn" id="btnConsume" type="button">📦 Simular salida de material (&minus;60 m)</button>
+          </div>
+          <div class="sim-card">
+            <h4>EPP &middot; Casco dieléctrico &middot; Brigada Norte</h4>
+            <div class="bar-track"><div class="bar-fill bar-fill--epp" id="eppBar"></div><div class="bar-threshold" id="eppThresholdMark"></div></div>
+            <div class="sim-readout"><b id="eppValue">45</b> días de vida útil restante &middot; alerta a <b id="eppMin">15</b> días</div>
+            <button class="sim-btn" id="btnAge" type="button">⏱ Adelantar 10 días</button>
+          </div>
+          <div class="sim-actions">
+            <button class="sim-run" id="btnRun" type="button">▶ Ejecutar verificación diaria</button>
+            <button class="sim-reset-all" id="btnResetSim" type="button">↺ Reiniciar</button>
+          </div>
+        </div>
+        <div class="sim-output">
+          <div class="sim-log" id="simLog" aria-live="polite">
+            <div class="log-line log-line--idle">Esperando ejecución&hellip;</div>
+          </div>
+          <div class="sim-email" id="simEmail" hidden></div>
         </div>
       </div>
     </section>
 
     <section class="slide" data-index="5">
-      <p class="eyebrow">En vivo</p>
-      <h2>Así se ve una alerta real</h2>
-      <div class="demo-cards">
-        <div class="demo-card">
-          <div class="title">&#9888; STOCK BAJO &middot; Bodega Regional Oriente</div>
-          <div class="body">Cable coaxial RG6 &mdash; 150&nbsp;m restantes (mínimo 300&nbsp;m)</div>
-        </div>
-        <div class="demo-card">
-          <div class="title">&#9200; EPP POR VENCER &middot; Brigada Norte</div>
-          <div class="body">Casco dieléctrico &mdash; vence en 12 días</div>
-        </div>
+      <p class="eyebrow">El resultado</p>
+      <h2>De revisar manualmente a enterarse en minutos</h2>
+      <div class="compare-bars">
+        <div class="cbar-row"><div class="cbar-label">Revisión manual (hoy)</div><div class="cbar-track"><div class="cbar-fill cbar-fill--before" style="width:100%"></div></div><div class="cbar-value">6 h</div></div>
+        <div class="cbar-row"><div class="cbar-label">Con FlowCentinela</div><div class="cbar-track"><div class="cbar-fill cbar-fill--after" style="width:8%"></div></div><div class="cbar-value">0.5 h</div></div>
       </div>
-      <p class="demo-note">Datos de ejemplo para la demostración &mdash; no son datos de producción.</p>
+      <span class="reduction-badge">&minus;92% horas humanas por semana</span>
+      <div class="stat-compare">
+        <div class="stat-block is-before"><div class="num">3 días</div><div class="lbl">Notar un quiebre &middot; hoy</div></div>
+        <div class="stat-arrow">&rarr;</div>
+        <div class="stat-block is-after"><div class="num">15 min</div><div class="lbl">Con FlowCentinela</div></div>
+      </div>
+      <p class="demo-note">Estimaciones para la exposición, a validar con datos reales una vez el flujo esté en marcha.</p>
     </section>
 
     <section class="slide" data-index="6">
-      <p class="eyebrow">El impacto</p>
-      <h2>De revisar manualmente a enterarse a tiempo</h2>
-      <div class="metrics">
-        <div class="metric-card">
-          <h4>Tiempo de detección</h4>
-          <div class="metric-before">Días &mdash; revisión manual</div>
-          <div class="metric-after">Minutos</div>
-        </div>
-        <div class="metric-card">
-          <h4>Alcance</h4>
-          <div class="metric-before">Solo si alguien pregunta</div>
-          <div class="metric-after">Todas las bodegas activas</div>
-        </div>
-        <div class="metric-card">
-          <h4>Reporte a dirección</h4>
-          <div class="metric-before">Ocasional, bajo demanda</div>
-          <div class="metric-after">Semanal, todos los lunes</div>
-        </div>
+      <p class="eyebrow">Lo que ya no tiene que pasar</p>
+      <h2>Qué evita FlowCentinela</h2>
+      <div class="evita-list">
+        <div class="evita-card"><span class="glyph">🛑</span><p>Que una brigada llegue a un nodo sin el material necesario para la reparación.</p></div>
+        <div class="evita-card"><span class="glyph">🦺</span><p>Que un trabajador siga usando un elemento de protección personal con la vida útil vencida.</p></div>
+        <div class="evita-card"><span class="glyph">📋</span><p>Reportes armados a mano, a último momento, antes de la reunión con dirección.</p></div>
       </div>
-      <p class="demo-note">Estimaciones para la exposición &mdash; se validan con datos reales una vez el flujo esté en marcha.</p>
     </section>
 
-    <section class="slide closing" data-index="7">
+    <section class="slide" data-index="7">
+      <p class="eyebrow">Lo que gana el equipo</p>
+      <h2>Qué mejora</h2>
+      <div class="pct-list">
+        <div class="pct-row"><div class="pct-label">Bodegas monitoreadas automáticamente cada día</div><div class="pct-track"><div class="pct-fill" style="width:100%"></div></div><div class="pct-value">100%</div></div>
+        <div class="pct-row"><div class="pct-label">Reducción en el tiempo de reacción</div><div class="pct-track"><div class="pct-fill" style="width:95%"></div></div><div class="pct-value">~95%</div></div>
+        <div class="pct-row"><div class="pct-label">Reportes semanales sin intervención manual</div><div class="pct-track"><div class="pct-fill" style="width:100%"></div></div><div class="pct-value">100%</div></div>
+        <div class="pct-row"><div class="pct-label">Tipos de alerta cubiertos (stock + EPP)</div><div class="pct-track"><div class="pct-fill" style="width:100%"></div></div><div class="pct-value">100%</div></div>
+      </div>
+    </section>
+
+    <section class="slide closing" data-index="8">
       <h2>FlowCentinela</h2>
-      <p class="tagline">Automatizar la vigilancia, no el criterio.</p>
+      <p class="tagline">Automatizar la vigilancia, para que nadie tenga que acordarse de revisar.</p>
       <div class="fact-sheet">
         <span><b>Autor:</b> Mario Daniel Enrique Pérez Jiménez</span>
         <span><b>Curso:</b> Automatización &mdash; UNAULA</span>
         <span><b>Stack:</b> Power Automate + Supabase/PostgreSQL</span>
         <span><b>Repositorio:</b> github.com/juliomario11/clase_automatizaciones_unaula</span>
       </div>
-      <p style="margin-top:28px;">Gracias &mdash; quedo atento a sus preguntas.</p>
+      <p style="margin-top:26px;">Gracias &mdash; quedo atento a sus preguntas.</p>
     </section>
 
   </main>
@@ -468,7 +538,7 @@
   <aside class="notes-panel" id="notesPanel" aria-hidden="true">
     <button class="notes-close" id="notesClose" type="button" aria-label="Cerrar notas">&times;</button>
     <div class="notes-title">Notas del orador</div>
-    <p class="notes-hint">Guion base (&asymp;3&nbsp;min si se lee literal). Amplía cada punto en vivo &mdash; ejemplos, capturas, el porqué de cada decisión &mdash; hasta los 8&nbsp;min mínimos. Usa el cronómetro del HUD para calibrar el ritmo.</p>
+    <p class="notes-hint">Guion base. Amplía cada punto en vivo hasta los 8&nbsp;min mínimos. Usa el cronómetro del HUD para calibrar el ritmo.</p>
     <p id="notesText"></p>
   </aside>
 </div>
@@ -476,14 +546,15 @@
 <script>
 (function(){
   var notes = [
-    "Buenos días. Mi proyecto se llama FlowCentinela: una automatización con Power Automate que vigila el inventario de materiales, equipos y EPP de las brigadas técnicas de mi empresa, FSCR Ingeniería, y avisa antes de que algo se convierta en un problema.",
-    "FSCR ya tiene un sistema propio construido en NestJS, Angular y Supabase, con cuatro dominios: Materiales, Equipos y Bodegas ya están en producción; EPP —cascos, guantes, arneses— está en definición. Este proyecto no reemplaza nada de esto, lo complementa.",
-    "Pero el sistema, hoy, es mudo: no avisa si un material se agota en una bodega, no avisa si un EPP está por vencer su vida útil, y nadie recibe un resumen periódico. Alguien tiene que entrar a revisar manualmente. Eso es exactamente un proceso repetitivo y basado en reglas — el tipo de caso que el curso enseñó a identificar.",
-    "FlowCentinela es un flujo de Power Automate que corre cada mañana, consulta la base de datos de la plataforma, y si detecta stock bajo o un EPP por vencer, genera una alerta al encargado de esa bodega. Además arma un reporte semanal para dirección.",
-    "Algo importante: el flujo solo lee datos, nunca escribe directo en la base. Si necesita registrar que ya avisó, se lo pide al backend de la plataforma. Es la misma regla de seguridad que ya aplican en FSCR: ninguna escritura sale del backend.",
-    "Así se ve una alerta real (mostrar demo aquí). Aclarar: estos son datos de ejemplo para la demostración, no datos de producción.",
-    "Hoy, detectar un quiebre de stock o un EPP vencido depende de que alguien lo note. Con esto, se sabe en minutos, no en días. Son estimaciones que se van a validar con datos reales una vez el flujo esté funcionando.",
-    "Eso es FlowCentinela: automatizar la vigilancia, no el criterio. Gracias — quedo atento a sus preguntas."
+    "Buenos días. Mi proyecto se llama FlowCentinela: un flujo de Power Automate que vigila el inventario de materiales y los elementos de protección personal de las brigadas técnicas de mi empresa, FSCR Ingeniería, y avisa antes de que algo se convierta en un problema.",
+    "FSCR ya tiene una plataforma propia con cuatro dominios: Materiales, Equipos, EPP y Bodegas. FlowCentinela no la reemplaza: se conecta a ella y añade tres cosas que hoy no existen — vigilar el stock y el EPP todos los días, clasificar qué tipo de alerta es, y notificar a quien corresponde.",
+    "El flujo corre cada mañana: consulta el stock y la vida útil del EPP en Supabase, evalúa si algo está por debajo del umbral, y si es así, envía la alerta con la plantilla correcta. En paralelo, cada lunes arma un reporte consolidado para dirección.",
+    "Hay dos tipos de alerta y cada una tiene su propia plantilla: una para stock bajo, con el material y las cantidades; otra para EPP por vencer, con el trabajador y los días restantes. Hoy, para la demo, ambas llegan a mi propio correo para que puedan verlo llegar en vivo.",
+    "Aquí pueden ver el flujo funcionando: si bajo el stock de este material, o adelanto los días de vida útil del EPP, y ejecuto la verificación, el sistema detecta la condición y genera la alerta con su plantilla — exactamente como lo haría todas las mañanas. (Si van a mostrar el correo real, este es el momento de cambiar a Power Automate y dispararlo desde ahí.)",
+    "¿Cuánto ahorra esto? Hoy revisar el inventario a mano toma varias horas humanas por semana; con FlowCentinela, minutos. Y detectar un quiebre de stock pasa de tomar días a tomar minutos, apenas se ejecuta la verificación diaria.",
+    "¿Qué evita? Que una brigada llegue a un nodo sin el material que necesita. Que alguien siga usando un EPP vencido. Y reportes armados a mano, a última hora, antes de una reunión.",
+    "¿Qué mejora? El 100% de las bodegas quedan monitoreadas todos los días sin que nadie tenga que acordarse, los reportes semanales salen solos, y ambos tipos de alerta quedan cubiertos desde el primer día.",
+    "Eso es FlowCentinela: automatizar la vigilancia, para que nadie tenga que acordarse de revisar. Gracias — quedo atento a sus preguntas."
   ];
 
   var deck = document.getElementById('deck');
@@ -566,7 +637,6 @@
   /* Timer */
   var DURATION = 8 * 60;
   var remaining = DURATION;
-  var overtime = false;
   var timerHandle = null;
   var timerDisplay = document.getElementById('timerDisplay');
   var timerToggle = document.getElementById('timerToggle');
@@ -583,10 +653,7 @@
     timerDisplay.textContent = fmt(remaining);
     timerDisplay.classList.toggle('is-over', remaining < 0);
   }
-  function tick(){
-    remaining -= 1;
-    paintTimer();
-  }
+  function tick(){ remaining -= 1; paintTimer(); }
   function toggleTimer(){
     if (timerHandle){
       clearInterval(timerHandle);
@@ -600,12 +667,134 @@
     }
   }
   timerToggle.addEventListener('click', toggleTimer);
-  timerReset.addEventListener('click', function(){
-    remaining = DURATION;
-    paintTimer();
-  });
+  timerReset.addEventListener('click', function(){ remaining = DURATION; paintTimer(); });
 
   render();
   paintTimer();
+
+  /* ---------- Simulator ---------- */
+  var sim = { stock:500, stockMin:300, stockMax:600, eppDays:45, eppMin:15, eppMax:60 };
+
+  var stockBar = document.getElementById('stockBar');
+  var stockValue = document.getElementById('stockValue');
+  var stockThresholdMark = document.getElementById('stockThresholdMark');
+  var eppBar = document.getElementById('eppBar');
+  var eppValue = document.getElementById('eppValue');
+  var eppThresholdMark = document.getElementById('eppThresholdMark');
+  var simLog = document.getElementById('simLog');
+  var simEmail = document.getElementById('simEmail');
+  var btnRun = document.getElementById('btnRun');
+
+  function pctOf(value, max){ return Math.max(0, Math.min(100, (value / max) * 100)); }
+
+  function paintSim(){
+    stockBar.style.width = pctOf(sim.stock, sim.stockMax) + '%';
+    stockBar.classList.toggle('is-low', sim.stock < sim.stockMin);
+    stockValue.textContent = sim.stock;
+    stockThresholdMark.style.left = pctOf(sim.stockMin, sim.stockMax) + '%';
+    stockThresholdMark.setAttribute('data-label', 'mín. ' + sim.stockMin);
+
+    eppBar.style.width = pctOf(sim.eppDays, sim.eppMax) + '%';
+    eppBar.classList.toggle('is-low', sim.eppDays < sim.eppMin);
+    eppValue.textContent = sim.eppDays;
+    eppThresholdMark.style.left = pctOf(sim.eppMin, sim.eppMax) + '%';
+    eppThresholdMark.setAttribute('data-label', 'alerta ' + sim.eppMin + 'd');
+  }
+
+  document.getElementById('btnConsume').addEventListener('click', function(){
+    sim.stock = Math.max(0, sim.stock - 60);
+    paintSim();
+  });
+  document.getElementById('btnAge').addEventListener('click', function(){
+    sim.eppDays = Math.max(0, sim.eppDays - 10);
+    paintSim();
+  });
+  document.getElementById('btnResetSim').addEventListener('click', function(){
+    sim.stock = 500; sim.eppDays = 45;
+    paintSim();
+    simLog.innerHTML = '<div class="log-line log-line--idle">Esperando ejecución&hellip;</div>';
+    simEmail.hidden = true;
+    simEmail.innerHTML = '';
+  });
+
+  function logLine(text, cls){
+    var d = document.createElement('div');
+    d.className = 'log-line' + (cls ? ' ' + cls : '');
+    d.textContent = text;
+    simLog.appendChild(d);
+  }
+
+  function emailMock(kind, subject, meta, body){
+    var wrap = document.createElement('div');
+    wrap.className = 'email-mock email-mock--' + kind;
+    var tag = document.createElement('div');
+    tag.className = 'email-mock-tag';
+    tag.textContent = 'Plantilla · ' + (kind === 'stock' ? 'Stock bajo' : 'EPP por vencer');
+    var metaEl = document.createElement('div');
+    metaEl.className = 'email-mock-meta';
+    metaEl.innerHTML = meta;
+    var subjEl = document.createElement('div');
+    subjEl.className = 'email-mock-subject';
+    subjEl.textContent = subject;
+    var bodyEl = document.createElement('div');
+    bodyEl.className = 'email-mock-body';
+    bodyEl.textContent = body;
+    wrap.appendChild(tag); wrap.appendChild(metaEl); wrap.appendChild(subjEl); wrap.appendChild(bodyEl);
+    return wrap;
+  }
+
+  btnRun.addEventListener('click', function(){
+    btnRun.disabled = true;
+    simLog.innerHTML = '';
+    simEmail.hidden = true;
+    simEmail.innerHTML = '';
+
+    var lowStock = sim.stock < sim.stockMin;
+    var lowEpp = sim.eppDays < sim.eppMin;
+
+    var steps = [
+      {t:'🔎 Consultando stock e inventario de EPP en Supabase (solo lectura)…'},
+      {t:'🧮 Evaluando condiciones: stock < mínimo · EPP < días de alerta…'}
+    ];
+    if (!lowStock && !lowEpp){
+      steps.push({t:'✅ Todo en rango — sin alertas que enviar hoy.', cls:'log-line--ok'});
+    } else {
+      if (lowStock) steps.push({t:'⚠ Condición detectada: stock por debajo del mínimo.', cls:'log-line--warn'});
+      if (lowEpp) steps.push({t:'⚠ Condición detectada: EPP próximo a vencer.', cls:'log-line--warn2'});
+      steps.push({t:'✉ Enviando alerta a mario.perez6361@unaula.edu.co…'});
+    }
+
+    steps.forEach(function(step, i){
+      setTimeout(function(){
+        logLine(step.t, step.cls);
+        if (i === steps.length - 1){
+          if (lowStock || lowEpp){
+            setTimeout(function(){
+              if (lowStock){
+                simEmail.appendChild(emailMock('stock',
+                  '⚠ Stock bajo — Bodega Regional Oriente — Cable coaxial RG6',
+                  '<b>De:</b> FlowCentinela &lt;automatizacion@fscr.local&gt;<br><b>Para:</b> mario.perez6361@unaula.edu.co',
+                  'Se detectó un nivel de stock por debajo del mínimo definido.\n\nBodega: Regional Oriente\nMaterial: Cable coaxial RG6\nStock actual: ' + sim.stock + ' m\nStock mínimo: ' + sim.stockMin + ' m\n\nPor favor gestionar la reposición con el proveedor.'
+                ));
+              }
+              if (lowEpp){
+                simEmail.appendChild(emailMock('epp',
+                  '⏰ EPP por vencer — Brigada Norte — Casco dieléctrico',
+                  '<b>De:</b> FlowCentinela &lt;automatizacion@fscr.local&gt;<br><b>Para:</b> mario.perez6361@unaula.edu.co',
+                  'Se detectó un elemento de protección personal próximo a vencer su vida útil.\n\nTrabajador: Brigada Norte\nElemento: Casco dieléctrico\nDías restantes: ' + sim.eppDays + '\n\nPor favor programar la reposición.'
+                ));
+              }
+              simEmail.hidden = false;
+              btnRun.disabled = false;
+            }, 400);
+          } else {
+            btnRun.disabled = false;
+          }
+        }
+      }, i * 550);
+    });
+  });
+
+  paintSim();
 })();
 </script>
