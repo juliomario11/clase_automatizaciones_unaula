@@ -32,11 +32,29 @@ Propuesta principal: **AutomatIA** (fusiona "Automatización" + "IA", los dos pi
 
 ## Opciones de proceso a automatizar (elegir 1)
 
-1. **Triage automático de correos (soporte/PQR):** clasifica correos entrantes con un modelo de IA Builder (clasificación de texto), responde con la plantilla según categoría, registra el caso en Excel/SharePoint y avisa por Teams si es queja.
-2. **Lector automático de facturas para control de gastos:** extiende el modelo de AI Builder ya entrenado en la Clase 4 (facturas) — al subir un PDF, extrae los campos, los escribe en Excel y alerta si el total supera un umbral.
-3. **Organizador automático de carpetas (Power Automate Desktop):** un flujo de escritorio mueve archivos a subcarpetas según tipo/nombre, invocado a diario por un flujo de nube programado (como el flujo del dólar de la Clase 4).
+Las tres usan material que ya se generó en clase, para que la exposición de 8 minutos tenga una demo real que mostrar y no solo teoría.
 
-*(Detalle completo de cada opción discutido en el chat; se deja aquí la versión resumida como registro.)*
+### Opción 1 — Triage automático de correos (soporte/PQR)
+
+- **Manual hoy:** alguien lee cada correo entrante, decide si es queja/pregunta/sugerencia, responde con una plantilla y anota el caso en una hoja de control.
+- **Automatizado:** Power Automate se dispara al llegar un correo → un modelo de AI Builder clasifica el texto (misma técnica que las facturas de Clase 4, aplicada a texto) → según la categoría, responde con la plantilla correcta → registra remitente/categoría/fecha en Excel o SharePoint → si es "queja", avisa por Teams.
+- **Para los 8 min:** mandas 3-4 correos de prueba en vivo, se ve la clasificación, la respuesta automática y la fila que aparece en Excel — hay mucho que mostrar.
+
+### Opción 2 — Lector automático de facturas para control de gastos
+
+- **Manual hoy:** cada factura en PDF se revisa a mano para copiar proveedor, fecha y total a una hoja de Excel.
+- **Automatizado:** extiende directo el modelo de AI Builder que ya entrenaron con las 15 facturas de la Clase 4 → se dispara al subir un PDF a una carpeta → acción *Process Document* extrae los datos → escribe la fila en Excel → si el total supera un umbral, alerta por correo/Teams.
+- **Para los 8 min:** subes una factura en vivo, se ve la fila llenarse sola y disparar (o no) la alerta — es la demo más "vistosa" de las tres porque ya tienen el modelo entrenado.
+
+### Opción 3 — Organizador automático de carpetas (Power Automate Desktop)
+
+- **Manual hoy:** ordenar a mano los PDFs/Excel/videos que se van acumulando en una carpeta (como esta misma de Descargas o la del curso).
+- **Automatizado:** un flujo de escritorio (Clase 3: acciones de archivos, bucles) mueve cada archivo a la subcarpeta según su tipo o el patrón del nombre, invocado a diario por un flujo de nube programado (igual que el flujo del dólar con Machine Runtime, Clase 4).
+- **Para los 8 min:** corres el flujo en vivo sobre una carpeta desordenada y se ve ordenarse sola; es la opción más simple de construir si queda poco tiempo.
+
+### 👉 Elegida
+
+*(Marca aquí cuál escogiste: Opción 1 / 2 / 3, y cualquier ajuste que le hagas al alcance.)*
 
 ## Súper prompt para Copilot
 
