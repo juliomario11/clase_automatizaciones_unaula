@@ -1,0 +1,611 @@
+<title>FlowCentinela</title>
+<style>
+  :root{
+    --bg:#0A0F1C;
+    --bg-2:#0D1424;
+    --surface:#131C30;
+    --surface-2:#1A2540;
+    --border:#26314C;
+    --text:#EAEFF9;
+    --text-dim:#93A0BE;
+    --text-faint:#5C6A8C;
+    --accent:#F0A94E;
+    --accent-soft:rgba(240,169,78,0.14);
+    --ok:#3ECF8E;
+    --ok-soft:rgba(62,207,142,0.14);
+    --crit:#F0555F;
+    --crit-soft:rgba(240,85,95,0.14);
+    --font-display:'Chakra Petch', sans-serif;
+    --font-body:'IBM Plex Sans', sans-serif;
+    --font-mono:'IBM Plex Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  ::selection{background:var(--accent-soft); color:var(--accent);}
+
+  .stage{
+    position:relative;
+    min-height:100dvh;
+    background:
+      radial-gradient(ellipse 60% 45% at 82% 8%, rgba(240,169,78,0.10), transparent 60%),
+      radial-gradient(ellipse 70% 60% at 12% 95%, rgba(62,124,207,0.10), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .bg-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(rgba(234,239,249,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(234,239,249,0.035) 1px, transparent 1px);
+    background-size:44px 44px;
+    -webkit-mask-image:radial-gradient(ellipse 90% 80% at 50% 40%, #000 40%, transparent 85%);
+            mask-image:radial-gradient(ellipse 90% 80% at 50% 40%, #000 40%, transparent 85%);
+    pointer-events:none;
+  }
+
+  /* ---------- HUD ---------- */
+  .hud{
+    position:relative; z-index:5;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px;
+    padding:14px clamp(16px,3vw,36px);
+    border-bottom:1px solid var(--border);
+    font-family:var(--font-mono);
+    font-size:0.78rem;
+    letter-spacing:0.04em;
+    color:var(--text-dim);
+    flex-wrap:wrap;
+  }
+  .hud-brand{display:flex; align-items:center; gap:9px; color:var(--text); font-weight:500;}
+  .hud-dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+
+  .hud-timer{display:flex; align-items:center; gap:8px;}
+  #timerDisplay{
+    font-variant-numeric:tabular-nums;
+    min-width:3.6em; text-align:right;
+    color:var(--text);
+  }
+  #timerDisplay.is-over{color:var(--crit);}
+  .hud-icon-btn{
+    background:transparent; border:1px solid var(--border); color:var(--text-dim);
+    width:26px; height:26px; border-radius:6px; cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:0.75rem; line-height:1; transition:border-color .15s, color .15s;
+  }
+  .hud-icon-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .hud-icon-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  /* ---------- DECK ---------- */
+  .deck{position:relative; flex:1; z-index:2;}
+  .slide{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:clamp(28px,5vw,72px) clamp(20px,7vw,120px);
+    opacity:0; transform:translateX(24px);
+    transition:opacity .45s ease, transform .45s ease;
+    pointer-events:none;
+  }
+  .slide.is-active{opacity:1; transform:translateX(0); pointer-events:auto;}
+  .slide.is-prev{transform:translateX(-24px);}
+
+  .eyebrow{
+    font-family:var(--font-mono); font-size:0.78rem; letter-spacing:0.14em;
+    color:var(--accent); text-transform:uppercase; margin:0 0 14px;
+  }
+  .slide h2{
+    font-family:var(--font-display); font-weight:600;
+    font-size:clamp(1.7rem,3.6vw,2.6rem);
+    margin:0 0 18px; text-wrap:balance; color:var(--text);
+  }
+  .slide-body{max-width:920px;}
+  .slide p{font-size:clamp(1rem,1.35vw,1.14rem); line-height:1.6; color:var(--text-dim); max-width:70ch;}
+
+  /* ---------- Slide 1: cover ---------- */
+  .cover{align-items:flex-start; justify-content:center; position:relative;}
+  .cover h1{
+    font-family:var(--font-display); font-weight:700;
+    font-size:clamp(3rem,8.5vw,6.2rem); line-height:0.98;
+    margin:0 0 18px; letter-spacing:-0.01em; text-wrap:balance;
+    background:linear-gradient(120deg, var(--text) 40%, var(--accent) 105%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .cover .sub{font-size:clamp(1.05rem,2vw,1.4rem); color:var(--text-dim); max-width:52ch; margin:0 0 40px;}
+  .cover .meta{
+    display:flex; flex-direction:column; gap:4px;
+    font-family:var(--font-mono); font-size:0.92rem; color:var(--text-faint);
+    border-left:2px solid var(--accent); padding-left:16px;
+  }
+  .cover .meta strong{color:var(--text); font-weight:500;}
+  .radar{
+    position:absolute; right:clamp(-60px,2vw,40px); top:50%; transform:translateY(-50%);
+    width:min(46vw,420px); aspect-ratio:1; border-radius:50%;
+    border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    pointer-events:none;
+  }
+  .radar::before, .radar::after{
+    content:""; position:absolute; border-radius:50%; border:1px solid var(--border);
+  }
+  .radar::before{inset:16%;}
+  .radar::after{inset:34%;}
+  .radar-sweep{
+    position:absolute; inset:0; border-radius:50%; overflow:hidden;
+  }
+  .radar-sweep::before{
+    content:""; position:absolute; inset:0;
+    background:conic-gradient(from 0deg, var(--accent-soft) 0deg, transparent 55deg);
+    animation:spin 5s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ---------- Slide 2: platform grid ---------- */
+  .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:8px;}
+  .domain-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:20px; display:flex; flex-direction:column; gap:10px; min-height:170px;
+  }
+  .domain-card h3{margin:0; font-family:var(--font-display); font-size:1.1rem; font-weight:600; color:var(--text);}
+  .domain-card p{margin:0; font-size:0.88rem; line-height:1.5; color:var(--text-dim);}
+  .status-pill{
+    align-self:flex-start; font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.06em;
+    text-transform:uppercase; padding:3px 9px; border-radius:99px;
+  }
+  .status-pill--ok{background:var(--ok-soft); color:var(--ok);}
+  .status-pill--pending{background:var(--accent-soft); color:var(--accent);}
+  .stack-line{
+    margin-top:6px; font-family:var(--font-mono); font-size:0.82rem; color:var(--text-faint);
+  }
+
+  /* ---------- Slide 3: blind spots ---------- */
+  .gap-list{list-style:none; margin:6px 0 22px; padding:0; display:flex; flex-direction:column; gap:12px; max-width:760px;}
+  .gap-list li{
+    display:flex; gap:14px; align-items:flex-start;
+    background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--crit);
+    border-radius:8px; padding:14px 18px;
+  }
+  .gap-list .mark{font-family:var(--font-mono); color:var(--crit); font-size:0.95rem; margin-top:1px;}
+  .gap-list p{margin:0; color:var(--text); font-size:0.98rem;}
+  .gap-list span.dim{color:var(--text-dim);}
+  .callout{
+    font-family:var(--font-mono); font-size:0.92rem; color:var(--accent);
+    border-left:2px solid var(--accent); padding-left:14px; max-width:64ch;
+  }
+
+  /* ---------- Slide 4: flow diagram ---------- */
+  .flow{display:flex; align-items:stretch; gap:10px; margin:10px 0 24px; flex-wrap:wrap;}
+  .flow-step{
+    flex:1 1 160px; background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:16px; display:flex; flex-direction:column; gap:8px; min-width:150px;
+  }
+  .flow-step-num{
+    font-family:var(--font-display); font-weight:700; font-size:0.95rem;
+    color:var(--bg); background:var(--accent); width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .flow-step h4{margin:0; font-size:0.94rem; font-family:var(--font-body); font-weight:600; color:var(--text);}
+  .flow-step p{margin:0; font-size:0.8rem; color:var(--text-dim); line-height:1.45;}
+  .flow-arrow{display:flex; align-items:center; justify-content:center; color:var(--text-faint); font-size:1.3rem; padding:0 2px;}
+  .flow-branch{
+    display:flex; align-items:center; gap:14px; margin-top:4px;
+    font-family:var(--font-mono); font-size:0.8rem; color:var(--text-faint);
+  }
+  .flow-branch-line{width:34px; border-top:2px dashed var(--border);}
+  .flow-branch .flow-step{flex:0 1 260px; border-style:dashed;}
+
+  /* ---------- Slide 5: security compare ---------- */
+  .compare{display:flex; flex-direction:column; gap:14px; margin-top:10px; max-width:900px;}
+  .compare-row{display:grid; grid-template-columns:1fr 28px 1fr; gap:14px; align-items:stretch;}
+  .compare-cell{border-radius:8px; padding:14px 16px; font-size:0.92rem; line-height:1.5;}
+  .compare-cell--before{background:var(--crit-soft); border:1px solid rgba(240,85,95,0.35); color:var(--text);}
+  .compare-cell--after{background:var(--ok-soft); border:1px solid rgba(62,207,142,0.35); color:var(--text);}
+  .compare-arrow{display:flex; align-items:center; justify-content:center; color:var(--text-faint);}
+  .compare-label{font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; display:block; margin-bottom:6px;}
+  .compare-cell--before .compare-label{color:var(--crit);}
+  .compare-cell--after .compare-label{color:var(--ok);}
+
+  /* ---------- Slide 6: demo ---------- */
+  .demo-cards{display:flex; flex-direction:column; gap:14px; margin:8px 0 18px; max-width:640px;}
+  .demo-card{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:10px;
+    padding:16px 18px; font-family:var(--font-mono);
+  }
+  .demo-card .title{font-size:0.86rem; color:var(--accent); margin-bottom:6px;}
+  .demo-card .body{font-size:0.92rem; color:var(--text);}
+  .demo-note{font-size:0.82rem; color:var(--text-faint); font-style:italic;}
+
+  /* ---------- Slide 7: metrics ---------- */
+  .metrics{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:10px 0 20px;}
+  .metric-card{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px;}
+  .metric-card h4{margin:0 0 10px; font-size:0.78rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-faint); font-family:var(--font-mono); font-weight:500;}
+  .metric-before{font-size:0.88rem; color:var(--text-dim); text-decoration:line-through; text-decoration-color:var(--crit);}
+  .metric-after{font-family:var(--font-display); font-size:1.3rem; font-weight:600; color:var(--ok); margin-top:4px;}
+
+  /* ---------- Slide 8: closing ---------- */
+  .closing h2{font-size:clamp(2.4rem,6vw,4rem);}
+  .closing .tagline{font-family:var(--font-display); color:var(--accent); font-size:1.1rem; margin:-8px 0 28px;}
+  .fact-sheet{display:flex; flex-direction:column; gap:6px; font-family:var(--font-mono); font-size:0.88rem; color:var(--text-dim); border-top:1px solid var(--border); padding-top:16px; max-width:520px;}
+  .fact-sheet b{color:var(--text); font-weight:500;}
+
+  /* ---------- Controls ---------- */
+  .controls{
+    position:relative; z-index:5;
+    display:flex; align-items:center; justify-content:center; gap:14px;
+    padding:14px clamp(16px,3vw,36px) calc(14px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .ctrl-btn{
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    width:38px; height:38px; border-radius:8px; cursor:pointer; font-size:1rem;
+    display:inline-flex; align-items:center; justify-content:center;
+    transition:border-color .15s, color .15s, background .15s;
+  }
+  .ctrl-btn:hover{border-color:var(--accent); color:var(--accent);}
+  .ctrl-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .ctrl-btn--ghost{width:auto; padding:0 14px; font-family:var(--font-mono); font-size:0.78rem; letter-spacing:0.04em; gap:6px;}
+  .ctrl-btn--ghost.is-on{border-color:var(--accent); color:var(--accent); background:var(--accent-soft);}
+  .dots{display:flex; gap:8px; margin:0 6px;}
+  .dot{
+    width:8px; height:8px; border-radius:50%; background:var(--border); border:none; cursor:pointer; padding:0;
+    transition:background .15s, transform .15s;
+  }
+  .dot:hover{background:var(--text-faint);}
+  .dot.is-active{background:var(--accent); transform:scale(1.3);}
+  .dot:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+
+  /* ---------- Notes panel ---------- */
+  .notes-panel{
+    position:fixed; right:0; bottom:0; top:0; z-index:20;
+    width:min(360px,86vw);
+    background:var(--bg-2); border-left:1px solid var(--border);
+    padding:24px; display:flex; flex-direction:column; gap:12px;
+    transform:translateX(100%); transition:transform .3s ease;
+    box-shadow:-20px 0 40px rgba(0,0,0,0.35);
+  }
+  .notes-panel.is-open{transform:translateX(0);}
+  .notes-title{font-family:var(--font-mono); font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--accent);}
+  .notes-hint{font-size:0.78rem; color:var(--text-faint); border-bottom:1px solid var(--border); padding-bottom:12px;}
+  #notesText{font-size:0.98rem; line-height:1.6; color:var(--text);}
+  .notes-close{align-self:flex-end; background:none; border:none; color:var(--text-faint); cursor:pointer; font-size:1.1rem;}
+
+  @media (prefers-reduced-motion: reduce){
+    .hud-dot, .radar-sweep::before{animation:none;}
+    .slide{transition:none;}
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:820px){
+    .grid4{grid-template-columns:repeat(2,1fr);}
+    .metrics{grid-template-columns:1fr;}
+    .radar{display:none;}
+    .compare-row{grid-template-columns:1fr; }
+    .compare-arrow{transform:rotate(90deg); padding:2px 0;}
+  }
+  @media (max-width:520px){
+    .grid4{grid-template-columns:1fr;}
+    .flow{flex-direction:column;}
+    .flow-arrow{transform:rotate(90deg);}
+    .hud{font-size:0.68rem;}
+  }
+</style>
+
+<div class="stage" id="stage">
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="hud">
+    <div class="hud-brand"><span class="hud-dot" aria-hidden="true"></span> FlowCentinela</div>
+    <div class="hud-slide-count"><span id="slideNum">1</span> / <span id="slideTotal">8</span></div>
+    <div class="hud-timer">
+      <span id="timerDisplay">8:00</span>
+      <button id="timerToggle" class="hud-icon-btn" type="button" aria-label="Iniciar cronómetro">▶</button>
+      <button id="timerReset" class="hud-icon-btn" type="button" aria-label="Reiniciar cronómetro">↺</button>
+    </div>
+  </header>
+
+  <main class="deck" id="deck">
+
+    <section class="slide cover is-active" data-index="0">
+      <h1>FlowCentinela</h1>
+      <p class="sub">Vigilancia automática de inventario, EPP y bodegas, construida con Power Automate.</p>
+      <div class="meta">
+        <span><strong>Mario Daniel Enrique Pérez Jiménez</strong></span>
+        <span>FSCR Ingeniería S.A.S. · Curso de Automatización, UNAULA</span>
+      </div>
+      <div class="radar" aria-hidden="true">
+        <div class="radar-sweep"></div>
+      </div>
+    </section>
+
+    <section class="slide" data-index="1">
+      <p class="eyebrow">El punto de partida</p>
+      <h2>Una plataforma, cuatro dominios</h2>
+      <div class="slide-body">
+        <p>FSCR Ingeniería S.A.S. ya opera un sistema propio &mdash; NestJS&nbsp;11, Angular&nbsp;21 y Supabase/PostgreSQL, con arquitectura hexagonal por dominio &mdash; para administrar el inventario de las brigadas que atienden la red de un cliente de telecomunicaciones.</p>
+      </div>
+      <div class="grid4">
+        <div class="domain-card">
+          <span class="status-pill status-pill--ok">Implementado</span>
+          <h3>Materiales</h3>
+          <p>Entradas, salidas, asignación, traslado y baja en un libro mayor de solo&#8209;anexar. El stock nunca se edita a mano: siempre se calcula.</p>
+        </div>
+        <div class="domain-card">
+          <span class="status-pill status-pill--ok">Implementado</span>
+          <h3>Equipos</h3>
+          <p>Inventario serializado por placa y serial únicos (FSCR-#####). Asignación, devolución y traslado como operaciones auditadas.</p>
+        </div>
+        <div class="domain-card">
+          <span class="status-pill status-pill--pending">En definición</span>
+          <h3>EPP</h3>
+          <p>Dotación, vida útil y reposición de elementos de protección personal por trabajador de brigada.</p>
+        </div>
+        <div class="domain-card">
+          <span class="status-pill status-pill--ok">Implementado</span>
+          <h3>Bodegas</h3>
+          <p>Ubicación por departamento y municipio. Bloqueo automático si tiene stock o equipos asignados.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-index="2">
+      <p class="eyebrow">El punto ciego</p>
+      <h2>Lo que el sistema todavía no vigila</h2>
+      <ul class="gap-list">
+        <li><span class="mark">&#9888;</span><p>Sin alerta de <strong>stock bajo</strong> &mdash; <span class="dim">un material puede agotarse en una bodega y nadie se entera hasta que ya hace falta.</span></p></li>
+        <li><span class="mark">&#9888;</span><p>Sin alerta de <strong>vencimiento de EPP</strong> &mdash; <span class="dim">la vida útil de un casco o un arnés puede vencer sin que se programe la reposición.</span></p></li>
+        <li><span class="mark">&#9888;</span><p>Sin <strong>reporte periódico</strong> &mdash; <span class="dim">dirección no tiene una foto consolidada del estado de bodegas y equipos.</span></p></li>
+      </ul>
+      <p class="callout">Repetitivo. Basado en reglas. De volumen suficiente &mdash; el candidato a automatizar que enseña el ciclo de vida de la Clase&nbsp;1.</p>
+    </section>
+
+    <section class="slide" data-index="3">
+      <p class="eyebrow">La propuesta</p>
+      <h2>El flujo, paso a paso</h2>
+      <div class="flow">
+        <div class="flow-step"><span class="flow-step-num">1</span><h4>Disparador diario</h4><p>Recurrence &mdash; cada mañana, antes del inicio de operación.</p></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step"><span class="flow-step-num">2</span><h4>Consulta a Supabase</h4><p>Rol de solo lectura. Libro mayor de materiales + vida útil de EPP.</p></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step"><span class="flow-step-num">3</span><h4>&iquest;Stock bajo o EPP por vencer?</h4><p>Condición sobre el umbral de cada bodega y la fecha de vencimiento.</p></div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step"><span class="flow-step-num">4</span><h4>Alerta al encargado</h4><p>Correo o Teams, dirigido a la bodega específica.</p></div>
+      </div>
+      <div class="flow-branch">
+        <div class="flow-branch-line"></div>
+        <div class="flow-step"><span class="flow-step-num">5</span><h4>Reporte semanal</h4><p>Cada lunes &mdash; bodegas bloqueadas, equipos en mantenimiento, EPP pendiente.</p></div>
+        <span>en paralelo, cada semana</span>
+      </div>
+    </section>
+
+    <section class="slide" data-index="4">
+      <p class="eyebrow">El compromiso de seguridad</p>
+      <h2>La misma regla, sin excepciones</h2>
+      <div class="compare">
+        <div class="compare-row">
+          <div class="compare-cell compare-cell--before"><span class="compare-label">Antes</span>Cualquier token válido bastaba para escribir en la base de datos.</div>
+          <div class="compare-arrow">&rarr;</div>
+          <div class="compare-cell compare-cell--after"><span class="compare-label">Con FlowCentinela</span>El flujo solo lee, con un rol restringido &mdash; nunca la llave de servicio.</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-cell compare-cell--before"><span class="compare-label">Antes</span>El frontend escribía directo contra la base de datos.</div>
+          <div class="compare-arrow">&rarr;</div>
+          <div class="compare-cell compare-cell--after"><span class="compare-label">Con FlowCentinela</span>Toda escritura, también la del flujo, pasa por el backend de FSCR.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-index="5">
+      <p class="eyebrow">En vivo</p>
+      <h2>Así se ve una alerta real</h2>
+      <div class="demo-cards">
+        <div class="demo-card">
+          <div class="title">&#9888; STOCK BAJO &middot; Bodega Regional Oriente</div>
+          <div class="body">Cable coaxial RG6 &mdash; 150&nbsp;m restantes (mínimo 300&nbsp;m)</div>
+        </div>
+        <div class="demo-card">
+          <div class="title">&#9200; EPP POR VENCER &middot; Brigada Norte</div>
+          <div class="body">Casco dieléctrico &mdash; vence en 12 días</div>
+        </div>
+      </div>
+      <p class="demo-note">Datos de ejemplo para la demostración &mdash; no son datos de producción.</p>
+    </section>
+
+    <section class="slide" data-index="6">
+      <p class="eyebrow">El impacto</p>
+      <h2>De revisar manualmente a enterarse a tiempo</h2>
+      <div class="metrics">
+        <div class="metric-card">
+          <h4>Tiempo de detección</h4>
+          <div class="metric-before">Días &mdash; revisión manual</div>
+          <div class="metric-after">Minutos</div>
+        </div>
+        <div class="metric-card">
+          <h4>Alcance</h4>
+          <div class="metric-before">Solo si alguien pregunta</div>
+          <div class="metric-after">Todas las bodegas activas</div>
+        </div>
+        <div class="metric-card">
+          <h4>Reporte a dirección</h4>
+          <div class="metric-before">Ocasional, bajo demanda</div>
+          <div class="metric-after">Semanal, todos los lunes</div>
+        </div>
+      </div>
+      <p class="demo-note">Estimaciones para la exposición &mdash; se validan con datos reales una vez el flujo esté en marcha.</p>
+    </section>
+
+    <section class="slide closing" data-index="7">
+      <h2>FlowCentinela</h2>
+      <p class="tagline">Automatizar la vigilancia, no el criterio.</p>
+      <div class="fact-sheet">
+        <span><b>Autor:</b> Mario Daniel Enrique Pérez Jiménez</span>
+        <span><b>Curso:</b> Automatización &mdash; UNAULA</span>
+        <span><b>Stack:</b> Power Automate + Supabase/PostgreSQL</span>
+        <span><b>Repositorio:</b> github.com/juliomario11/clase_automatizaciones_unaula</span>
+      </div>
+      <p style="margin-top:28px;">Gracias &mdash; quedo atento a sus preguntas.</p>
+    </section>
+
+  </main>
+
+  <nav class="controls">
+    <button id="prevBtn" class="ctrl-btn" type="button" aria-label="Diapositiva anterior">&larr;</button>
+    <div class="dots" id="dots"></div>
+    <button id="nextBtn" class="ctrl-btn" type="button" aria-label="Siguiente diapositiva">&rarr;</button>
+    <button id="notesBtn" class="ctrl-btn ctrl-btn--ghost" type="button" aria-label="Mostrar notas del orador">&#128221; Notas</button>
+    <button id="fsBtn" class="ctrl-btn ctrl-btn--ghost" type="button" aria-label="Pantalla completa">&#10021; Pantalla completa</button>
+  </nav>
+
+  <aside class="notes-panel" id="notesPanel" aria-hidden="true">
+    <button class="notes-close" id="notesClose" type="button" aria-label="Cerrar notas">&times;</button>
+    <div class="notes-title">Notas del orador</div>
+    <p class="notes-hint">Guion base (&asymp;3&nbsp;min si se lee literal). Amplía cada punto en vivo &mdash; ejemplos, capturas, el porqué de cada decisión &mdash; hasta los 8&nbsp;min mínimos. Usa el cronómetro del HUD para calibrar el ritmo.</p>
+    <p id="notesText"></p>
+  </aside>
+</div>
+
+<script>
+(function(){
+  var notes = [
+    "Buenos días. Mi proyecto se llama FlowCentinela: una automatización con Power Automate que vigila el inventario de materiales, equipos y EPP de las brigadas técnicas de mi empresa, FSCR Ingeniería, y avisa antes de que algo se convierta en un problema.",
+    "FSCR ya tiene un sistema propio construido en NestJS, Angular y Supabase, con cuatro dominios: Materiales, Equipos y Bodegas ya están en producción; EPP —cascos, guantes, arneses— está en definición. Este proyecto no reemplaza nada de esto, lo complementa.",
+    "Pero el sistema, hoy, es mudo: no avisa si un material se agota en una bodega, no avisa si un EPP está por vencer su vida útil, y nadie recibe un resumen periódico. Alguien tiene que entrar a revisar manualmente. Eso es exactamente un proceso repetitivo y basado en reglas — el tipo de caso que el curso enseñó a identificar.",
+    "FlowCentinela es un flujo de Power Automate que corre cada mañana, consulta la base de datos de la plataforma, y si detecta stock bajo o un EPP por vencer, genera una alerta al encargado de esa bodega. Además arma un reporte semanal para dirección.",
+    "Algo importante: el flujo solo lee datos, nunca escribe directo en la base. Si necesita registrar que ya avisó, se lo pide al backend de la plataforma. Es la misma regla de seguridad que ya aplican en FSCR: ninguna escritura sale del backend.",
+    "Así se ve una alerta real (mostrar demo aquí). Aclarar: estos son datos de ejemplo para la demostración, no datos de producción.",
+    "Hoy, detectar un quiebre de stock o un EPP vencido depende de que alguien lo note. Con esto, se sabe en minutos, no en días. Son estimaciones que se van a validar con datos reales una vez el flujo esté funcionando.",
+    "Eso es FlowCentinela: automatizar la vigilancia, no el criterio. Gracias — quedo atento a sus preguntas."
+  ];
+
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+  var total = slides.length;
+  var current = 0;
+
+  var slideNum = document.getElementById('slideNum');
+  var slideTotal = document.getElementById('slideTotal');
+  slideTotal.textContent = total;
+
+  var dotsWrap = document.getElementById('dots');
+  slides.forEach(function(_, i){
+    var b = document.createElement('button');
+    b.className = 'dot' + (i === 0 ? ' is-active' : '');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Ir a la diapositiva ' + (i+1));
+    b.addEventListener('click', function(){ goTo(i); });
+    dotsWrap.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.querySelectorAll('.dot'));
+
+  var notesText = document.getElementById('notesText');
+
+  function render(){
+    slides.forEach(function(s, i){
+      s.classList.toggle('is-active', i === current);
+      s.classList.toggle('is-prev', i < current);
+    });
+    dots.forEach(function(d, i){ d.classList.toggle('is-active', i === current); });
+    slideNum.textContent = current + 1;
+    notesText.textContent = notes[current];
+  }
+
+  function goTo(i){
+    current = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', function(){ goTo(current - 1); });
+  document.getElementById('nextBtn').addEventListener('click', function(){ goTo(current + 1); });
+
+  window.addEventListener('keydown', function(e){
+    if (['ArrowRight','PageDown',' '].indexOf(e.key) > -1){ e.preventDefault(); goTo(current + 1); }
+    else if (['ArrowLeft','PageUp'].indexOf(e.key) > -1){ e.preventDefault(); goTo(current - 1); }
+    else if (e.key === 'n' || e.key === 'N'){ toggleNotes(); }
+    else if (e.key === 'f' || e.key === 'F'){ toggleFullscreen(); }
+  });
+
+  var touchX = null;
+  deck.addEventListener('touchstart', function(e){ touchX = e.changedTouches[0].clientX; }, {passive:true});
+  deck.addEventListener('touchend', function(e){
+    if (touchX === null) return;
+    var dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+    touchX = null;
+  }, {passive:true});
+
+  /* Notes panel */
+  var notesPanel = document.getElementById('notesPanel');
+  var notesBtn = document.getElementById('notesBtn');
+  function toggleNotes(force){
+    var open = typeof force === 'boolean' ? force : !notesPanel.classList.contains('is-open');
+    notesPanel.classList.toggle('is-open', open);
+    notesPanel.setAttribute('aria-hidden', String(!open));
+    notesBtn.classList.toggle('is-on', open);
+  }
+  notesBtn.addEventListener('click', function(){ toggleNotes(); });
+  document.getElementById('notesClose').addEventListener('click', function(){ toggleNotes(false); });
+
+  /* Fullscreen */
+  var fsBtn = document.getElementById('fsBtn');
+  function toggleFullscreen(){
+    var stage = document.getElementById('stage');
+    if (!document.fullscreenElement){ stage.requestFullscreen && stage.requestFullscreen(); }
+    else { document.exitFullscreen && document.exitFullscreen(); }
+  }
+  fsBtn.addEventListener('click', toggleFullscreen);
+
+  /* Timer */
+  var DURATION = 8 * 60;
+  var remaining = DURATION;
+  var overtime = false;
+  var timerHandle = null;
+  var timerDisplay = document.getElementById('timerDisplay');
+  var timerToggle = document.getElementById('timerToggle');
+  var timerReset = document.getElementById('timerReset');
+
+  function fmt(sec){
+    var neg = sec < 0;
+    sec = Math.abs(sec);
+    var m = Math.floor(sec / 60);
+    var s = sec % 60;
+    return (neg ? '+' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function paintTimer(){
+    timerDisplay.textContent = fmt(remaining);
+    timerDisplay.classList.toggle('is-over', remaining < 0);
+  }
+  function tick(){
+    remaining -= 1;
+    paintTimer();
+  }
+  function toggleTimer(){
+    if (timerHandle){
+      clearInterval(timerHandle);
+      timerHandle = null;
+      timerToggle.textContent = '▶';
+      timerToggle.setAttribute('aria-label','Iniciar cronómetro');
+    } else {
+      timerHandle = setInterval(tick, 1000);
+      timerToggle.textContent = '❚❚';
+      timerToggle.setAttribute('aria-label','Pausar cronómetro');
+    }
+  }
+  timerToggle.addEventListener('click', toggleTimer);
+  timerReset.addEventListener('click', function(){
+    remaining = DURATION;
+    paintTimer();
+  });
+
+  render();
+  paintTimer();
+})();
+</script>
