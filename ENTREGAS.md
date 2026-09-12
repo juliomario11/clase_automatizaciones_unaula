@@ -26,39 +26,18 @@ La hipótesis más probable es que la entrega de mañana sea un ejercicio práct
 - (Clase 2) Ocultar el campo "Aprobación" del formulario de Microsoft Forms del ejercicio (sin fecha puntual dada).
 - (Clase 2) Ejercicio no alcanzado por tiempo: guardar en OneDrive los adjuntos de un correo, validando que contenga la palabra "Visitas" (individual o en equipo).
 
-## Súper prompt sugerido — Copilot en Power Automate
+## Nombre del proyecto (formulario "Registro de equipos")
 
-Pensado para el asistente Copilot ("Describe para diseñar") de Power Automate, aplicando el ciclo de vida del curso. Completa el bloque `[PROCESO A AUTOMATIZAR]` con tu caso real antes de usarlo.
+Propuesta principal: **AutomatIA** (fusiona "Automatización" + "IA", los dos pilares del curso). Alternativas: *FlowMind*, *NeuroFlow*, *FlowForge*. Pendiente de confirmar cuál se usó finalmente en el formulario.
 
-```text
-Actúa como un consultor experto en automatización de procesos con Microsoft Power Automate,
-con dominio del ciclo de vida completo de una automatización (identificación → diseño →
-evaluación → construcción → entrega/documentación).
+## Opciones de proceso a automatizar (elegir 1)
 
-CONTEXTO:
-Soy estudiante de la Especialización en Analítica de Datos (UNAULA) y debo construir y
-exponer (8 minutos) una automatización propia en Power Automate, siguiendo ese ciclo de
-vida. No necesita ser compleja: el ejemplo de referencia del curso fue un flujo simple
-que consulta el valor del dólar y lo reporta.
+1. **Triage automático de correos (soporte/PQR):** clasifica correos entrantes con un modelo de IA Builder (clasificación de texto), responde con la plantilla según categoría, registra el caso en Excel/SharePoint y avisa por Teams si es queja.
+2. **Lector automático de facturas para control de gastos:** extiende el modelo de AI Builder ya entrenado en la Clase 4 (facturas) — al subir un PDF, extrae los campos, los escribe en Excel y alerta si el total supera un umbral.
+3. **Organizador automático de carpetas (Power Automate Desktop):** un flujo de escritorio mueve archivos a subcarpetas según tipo/nombre, invocado a diario por un flujo de nube programado (como el flujo del dólar de la Clase 4).
 
-PROCESO A AUTOMATIZAR:
-[Describe en 3-5 líneas: qué se hace hoy manualmente, quién lo hace, con qué herramientas
-(Excel, correo, SharePoint, Forms, carpetas, etc.), cada cuánto se repite, y por qué crees
-que es repetitivo y basado en reglas fijas.]
+*(Detalle completo de cada opción discutido en el chat; se deja aquí la versión resumida como registro.)*
 
-LO QUE NECESITO QUE HAGAS:
-1. Evalúa si el proceso descrito es un buen candidato para automatizar (repetitivo, basado
-   en reglas, volumen suficiente) o si primero debería optimizarse antes de automatizar.
-2. Propón el diseño del flujo paso a paso: disparador, conectores, acciones, condiciones,
-   y los puntos donde más probablemente falle.
-3. Redacta, en un bloque de código aparte, las instrucciones en lenguaje natural listas
-   para pegar en el asistente Copilot de Power Automate y generar un primer borrador del flujo.
-4. Indica qué pruebas debería hacer para validar el flujo, incluyendo casos borde.
-5. Redacta un guion breve (máximo 8 minutos hablados) para la exposición: el proceso, el
-   beneficio cuantificado (p. ej. tiempo ahorrado) y la demo del flujo.
+## Súper prompt para Copilot
 
-FORMATO DE RESPUESTA:
-- Un encabezado por cada uno de los 5 puntos anteriores.
-- El prompt del punto 3 en su propio bloque de código, listo para copiar y pegar.
-- Respuestas concisas; no satures con teoría ya vista en el curso.
-```
+Se movió a su propio archivo: [`PROMPT_COPILOT.md`](./PROMPT_COPILOT.md).
