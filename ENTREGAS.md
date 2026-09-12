@@ -30,7 +30,7 @@ La hipótesis más probable es que la entrega de mañana sea un ejercicio práct
 
 Propuesta principal: **AutomatIA** (fusiona "Automatización" + "IA", los dos pilares del curso). Alternativas: *FlowMind*, *NeuroFlow*, *FlowForge*. Pendiente de confirmar cuál se usó finalmente en el formulario.
 
-## Opciones de proceso a automatizar (elegir 1 de 4)
+## Opciones de proceso a automatizar (elegir 1 de 5)
 
 Las tres usan material que ya se generó en clase, para que la exposición de 8 minutos tenga una demo real que mostrar y no solo teoría.
 
@@ -64,6 +64,18 @@ Las tres usan material que ya se generó en clase, para que la exposición de 8 
   6. **Seguimiento periódico:** cada cierto intervalo consulta el avance del caso en Salesforce Field Service y reenvía el estado a los interesados; si el caso ya aparece resuelto en Salesforce, marca el incidente como "OK" y cierra el seguimiento.
 - **Para los 8 min:** es la opción más completa de las cuatro — se puede mostrar el ciclo entero con un INC de prueba (fila en Supabase/CSV): clasificación automática de prioridad, alerta a la región, consulta del histórico por nodo, respuesta simulada de Cacti/Zabbix, y cierre automático al "resolverse" en Salesforce.
 - **Nota de alcance:** integra 5-6 sistemas (ServiceNow, Supabase/CSV, correo, Cacti/Zabbix, Salesforce), bastante más que las otras 3 opciones. Para que sea viable en el tiempo disponible, conviene simular con datos de prueba las integraciones que no se puedan conectar de verdad (el profesor solo pidió mostrar el flujo funcionando con un caso de prueba, no una integración productiva) y aclararlo así en la exposición.
+
+### Opción 5 — Automatización de alertas para la plataforma de inventario de FSCR Ingeniería S.A.S.
+
+- **Contexto:** a diferencia de las otras 4 opciones, esta parte de una plataforma real ya en desarrollo: el sistema de FSCR Ingeniería S.A.S. (NestJS 11 + Angular 21/standalone+signals + Supabase/PostgreSQL, arquitectura hexagonal por dominio) para administrar **Materiales, Equipos, EPP y Bodegas** de las brigadas que operan la red de un cliente de telecomunicaciones (TELCO). Materiales, Equipos y Bodegas ya están implementados; EPP está "en definición".
+- **Manual/pendiente hoy:** no existen alertas automáticas de stock bajo de materiales, ni de vencimiento de vida útil de EPP por trabajador, ni un reporte periódico consolidado a dirección — hoy alguien tendría que entrar al sistema y revisarlo manualmente para detectarlo.
+- **Automatizado (diseño propuesto con Power Automate):**
+  1. Flujo programado (diario) que consulta, vía la API REST de Supabase con un rol de **solo lectura** (nunca la llave de servicio — para respetar el mismo principio de "toda escritura pasa por el backend" que ya rige la plataforma), el libro mayor de materiales y la vida útil de EPP por trabajador.
+  2. Si un material cae bajo el umbral de stock en una bodega, o un EPP está próximo a vencer, genera una alerta (correo/Teams) al encargado de esa bodega.
+  3. Si el flujo necesita registrar que la alerta ya se envió (para no duplicar avisos), llama a un endpoint propio del backend NestJS en vez de escribir directo en la tabla — la misma frontera de seguridad que ya aplican (ninguna escritura sale del backend, ni siquiera desde Power Automate).
+  4. Reporte semanal consolidado a dirección: bodegas bloqueadas, equipos en mantenimiento prolongado, EPP pendiente de reposición.
+- **Para los 8 min:** se puede mostrar el flujo corriendo sobre datos reales (o de prueba) de una plataforma que ya existe — mucho más contundente que un ejemplo simulado desde cero, porque complementa un sistema real en desarrollo.
+- **Nota de alcance:** aquí el mérito no es "reemplazar un proceso manual" sino evitar construir a mano, dentro de NestJS, algo que Power Automate ya resuelve out-of-the-box (triggers programados, conectores de correo/Teams) — vale la pena explicitar ese argumento en la exposición, porque es distinto al de las otras 4 opciones.
 
 ### 👉 Elegida
 
