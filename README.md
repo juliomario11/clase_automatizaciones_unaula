@@ -23,6 +23,8 @@ Cada carpeta de clase contiene:
 
 ## Conclusiones por clase
 
+> Resumen breve por clase. Para el temario completo de cada una, ver [`RESUMEN_CLASES.md`](./RESUMEN_CLASES.md).
+
 ### Clase 1 — Fundamentos de la automatización
 Presentación del curso (6 clases en 3 semanas: Power Automate Cloud, Desktop, AI Hub, LangChain/LangGraph y proyecto final). Se define qué es automatización de procesos, la diferencia entre RDA y RPA, cuándo automatizar y cuándo NO hacerlo (reglas que cambian mucho, criterio subjetivo, bajo volumen, sistemas legados/seguridad), glosario técnico, panorama de mercado (UiPath, Automation Anywhere, Microsoft) y licenciamiento de Power Automate.
 
