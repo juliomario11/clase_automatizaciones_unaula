@@ -1,0 +1,13 @@
+# Grabaciones en video (demasiado pesadas para GitHub sin Git LFS)
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Archivos temporales del sistema operativo
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Configuración local de herramientas (no es material del curso)
+.claude/
